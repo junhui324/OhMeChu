@@ -22,8 +22,8 @@ const productsService = {
     return addProduct;
   },
   
-  updateProductsList: async(rangeField, range, field, contents) => {
-    const product = await Products.updateMany({[rangeField]: range}, {[field]: contents}); //rangeField: 조건(카테고리 등)
+  updateProductsList: async(filterField, filterContents, field, contents) => {
+    const product = await Products.updateMany({[filterField]: filterContents}, {[field]: contents}); //rangeField: 조건(카테고리 등)
     return product;      
   },
 
@@ -44,7 +44,19 @@ const productsService = {
 
   getProduct: async (id) => {
     const product = await Products.findById(id);
-    return product;  
+    return product;
+  },
+
+  getRecommendedList: async () => {
+    const productsAll = await Products.find({recommended: 1})
+                                      .limit(12);
+    return productsAll;
+  },
+
+  getNewProductsList: async () => {
+    const productsAll = await Products.find({}).sort({createdAt: -1})
+                                               .limit(12);
+    return productsAll;
   },
   
 };

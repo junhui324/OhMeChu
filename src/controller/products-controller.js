@@ -33,8 +33,8 @@ const productsController = {
 
   updateProductsList: async (req, res, next) => {
     try{
-      const {rangeField, range, field, contents} = req.body;
-      const product = await productsService.updateProductsList(rangeField, range, field, contents);
+      const {filterField, filterContents, field, contents} = req.body;
+      const product = await productsService.updateProductsList(filterField, filterContents, field, contents);
       res.json(product);
     } catch (err) {
       next(err);
@@ -80,6 +80,25 @@ const productsController = {
       next(err);
     };
   },
+
+  getRecommendedList: async (req, res, next) => {
+    try{
+      const productsAll = await productsService.getRecommendedList();
+      res.json(productsAll);
+    } catch (err) {
+      next(err);
+    };
+  },
+
+  getNewProductsList: async (req, res, next) => {
+    try{
+      const productsAll = await productsService.getNewProductsList();
+      res.json(productsAll);
+    } catch (err) {
+      next(err);
+    };
+  },
+
 //추가
 };
 
