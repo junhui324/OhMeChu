@@ -1,32 +1,39 @@
 //products schema
-import { Schema } from "mongoose";
+import { Schema } from 'mongoose';
 
-const productsSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
+const productsSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    img_url: {
+      type: String,
+      required: true,
+    },
+    category: {
+      type: String,
+      required: true,
+      default: '한식',
+    },
+    description: {
+      type: String,
+    },
+    sub_description: {
+      type: [String],
+      default: ['0인분', '0분', '?'],
+    },
+    recommended: {
+      type: Number,
+      default: 0,
+    },
   },
-  price: {
-    type: Number,
-    required: true,
-  },
-  img_url: {
-    type: String,
-    required: true,
-  },
-  category: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-  },
-  sub_description: {
-    type: [String],
-  },
-  recommended: {
-    type: Number,
-  }
-}, {timestamps: true});
+  { timestamps: true },
+  { versionKey: false }
+);
 
-export {productsSchema};
+export { productsSchema };
