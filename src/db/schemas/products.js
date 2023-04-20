@@ -2,6 +2,9 @@
 import { Schema } from "mongoose";
 
 const productsSchema = new Schema({
+  // _id: {
+  //   type: Schema.Types.ObjectId,
+  // },
   name: {
     type: String,
     required: true,
@@ -20,13 +23,16 @@ const productsSchema = new Schema({
   },
   description: {
     type: String,
+    default: "설명이 없습니다.",
   },
   sub_description: {
     type: [String],
+    default: ["미지정", "미지정", "미지정"],
   },
   recommended: {
     type: Number,
-  }
+    default: 0,
+  },
 }, {timestamps: true});
 
 export {productsSchema};

@@ -1,18 +1,19 @@
 import express, { json, urlencoded } from "express";
+import {mongoose} from "mongoose";
 // import main from "./main";
 require("dotenv").config();
 
 import {productsRouter} from "./router/products-router.js";
 
 const app = express();
-connect(process.env.MONGODB_URI);
+mongoose.connect(process.env.MONGODB_URI);
 
 app.use(json());
 app.use(urlencoded({extended: true}));
 
-app.use("/products", productsRouter);
+app.use("/api/products", productsRouter);
 
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
   res.send("Shopping Mall");
 });
 
