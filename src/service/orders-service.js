@@ -42,10 +42,10 @@ const ordersService = {
     return order;
   },
 
-  //주문 id 활용해서 주문 정보 업데이트 -> 배송지 변겅 (order_state가 "상품 준비 중" 일 때) order_state를 true false로
+  //주문 id 활용해서 주문 정보 업데이트 -> 배송지 변겅 (order_state가 "상품 준비 중" 일 때)
   updateOrder: async (id, address) => {
     const order = await Orders.findById(id).exec();
-    if (order.order_state) {
+    if (order.order_state === '상품 준비 중') {
       const updatedResult = await Orders.updateOne(
         { _id: order._id },
         { address: address }
@@ -64,7 +64,7 @@ const ordersService = {
   //주문 id 활용해서 주문 취소(삭제) 하기 -> 주문 취소 (order_state가 "상품 준비 중" 일 때)
   deleteOrder: async (id) => {
     const order = await Orders.findById(id).exec();
-    if (order.order_state) {
+    if (order.order_state === '상품 준비 중') {
       const deletedResult = await Orders.deleteOne({ _id: order._id });
       return deletedResult;
     } else {
