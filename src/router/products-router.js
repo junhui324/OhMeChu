@@ -17,9 +17,9 @@ productsRouter.put("/:id/admin", productsController.updateProduct);
 
 productsRouter.delete("/:id/admin", productsController.deleteProduct);
 
-productsRouter.get("/", productsController.getProductsList);
+productsRouter.get("/", productsController.getProductsList); //query String 사용 "sort=sortKey"
+productsRouter.get("/:id", productsController.getProduct);
 productsRouter.get("/recommendations", productsController.getRecommendedList);
 productsRouter.get("/new", productsController.getNewProductsList);
-productsRouter.get("/:id", productsController.getProduct);
 
 export {productsRouter};

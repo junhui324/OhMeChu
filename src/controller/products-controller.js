@@ -64,7 +64,8 @@ const productsController = {
 
   getProductsList: async (req, res, next) => {
     try{
-      const productsAll = await productsService.getProductsList();
+      const sortingKey = req.query.sort;
+      const productsAll = await productsService.getProductsList(sortingKey);
       res.json(productsAll);
     } catch (err) {
       next(err);
