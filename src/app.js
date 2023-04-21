@@ -1,15 +1,16 @@
 import express, { json, urlencoded } from 'express';
 import cors from 'cors';
-//import http, { createServer } from 'http';
 import { mongoose } from 'mongoose';
 import passport from 'passport';
-import {usePassport} from './passport/index.js'
-// import main from "./main";
+import {usePassport} from './passport/index.js';
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
+
 require('dotenv').config();
 
 import { productsRouter } from './router/products-router.js';
 import { ordersRouter } from './router/orders-router.js';
-// import { usersRouter } from './router/users-router.js';
+import { usersRouter } from './router/users-router.js';
 import { authRouter } from './router/auth-router.js';
 
 
@@ -23,11 +24,26 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-//const server = createServer(app);
 mongoose.connect(process.env.MONGODB_URI);
 
 //passport 전략 등록
+
 usePassport();
+
+const store = MongoStore.create({
+  mongoUrl: process.env.MONGODB_URI,
+  ttl: 14*24*60,
+});
+
+app.use(session({
+	secret: process.env.SESSION_KEY,
+	resave: false,
+	saveUninitialized: true,
+	// secure: true,
+	httpOnly: true,
+  store: store
+}));
+app.use(passport.initialize());
 
 //json parser
 app.use(json());
@@ -42,10 +58,9 @@ app.get('/api', (req, res) => {
 });
 
 //라우터 연결
-app.use(passport.initialize());
 app.use('/api/products', productsRouter);
 app.use('/api/orders', ordersRouter);
-// app.use('/api/users', usersRouter);
+app.use('/api', usersRouter);
 app.use('/api/login', authRouter);
 
 //오류처리 미들웨어
@@ -61,8 +76,3 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
   console.log(`서버가 정상적으로 시작되었습니다. 포트번호: ${port}`);
 });
-
-/*
-server.listen(port, () => {
-  console.log(`서버가 정상적으로 시작되었습니다. 포트번호: ${port}`);
-});*/
