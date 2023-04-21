@@ -1,29 +1,25 @@
 // controller의 객체에 있는 requset handler를 route 하는 코드
 
-import { Router } from 'express';
-import { productsController } from '../controller/products-controller.js';
+import { Router } from "express";
+import { productsController } from "../controller/products-controller.js";
 
 const productsRouter = Router();
 
-//상품 하나 추가
-productsRouter.post('/admin', productsController.addProductOne);
+//관리자 기능이므로 /admin에서 추가
+productsRouter.post(
+  "/admin", 
+  productsController.addProductsList, 
+  productsController.addProduct
+  );
 
-//상품 여러개 추가
-productsRouter.post('/admin/1', productsController.addProducts);
+productsRouter.put("/admin", productsController.updateProductsList);
+productsRouter.put("/:id/admin", productsController.updateProduct);
 
-//상품 정렬
-//productsRouter.get('/sort', productsController.getProductsSort);
+productsRouter.delete("/:id/admin", productsController.deleteProduct);
 
-//상품 전체 불러오기 , 상품 정렬
-productsRouter.get('/', productsController.getProductsSort);
+productsRouter.get("/", productsController.getProductsList); //query String 사용 "sort=sortKey"
+productsRouter.get("/:id", productsController.getProduct);
+productsRouter.get("/recommendations", productsController.getRecommendedList);
+productsRouter.get("/new", productsController.getNewProductsList);
 
-//상품 id 활용해서 해당 상품만 불러오기
-productsRouter.get('/:id', productsController.getProduct);
-
-//상품 id 활용해서 해당 상품 정보 업데이트
-productsRouter.put('/:id', productsController.updateProduct);
-
-//상품 id 활용해서 해당 상품 삭제
-productsRouter.delete('/:id', productsController.deleteProduct);
-
-export { productsRouter };
+export {productsRouter};
