@@ -38,10 +38,10 @@ const ordersSchema = new Schema(
       default: 0,
     },
     order_state: {
-      //"상품 준비 중" 일 때만 "배송지 수정 / 주문 취소" 가능 ->  true(상품 준비 중), false(나머지) 로...
-      type: Boolean,
+      //"상품 준비 중" 일 때만 "배송지 수정 / 주문 취소" 가능
+      type: String,
       required: true,
-      default: true,
+      default: '상품 준비 중',
     },
   },
   { timestamps: true },

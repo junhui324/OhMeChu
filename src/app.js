@@ -1,18 +1,27 @@
 import express, { json, urlencoded } from 'express';
 import cors from 'cors';
-//import http, { createServer } from 'http';
+import session from 'express-session';
+import passport from 'passport';
 import { mongoose } from 'mongoose';
-// import main from "./main";
+import { usePassport } from './passport/index.js';
 require('dotenv').config();
 
 import { productsRouter } from './router/products-router.js';
 import { ordersRouter } from './router/orders-router.js';
+import { usersRouter } from './router/users-router.js';
+import { authRouter } from './router/auth-router.js';
 
 const port = 8080;
 
 const app = express();
 //const server = createServer(app);
 mongoose.connect(process.env.MONGODB_URI);
+
+usePassport();
+app.use(passport.initialize());
+//app.use(session({ secret: 'keyboard cat' }));
+//app.use(passport.initialize());
+//app.use(passport.session());
 
 app.use(json());
 app.use(urlencoded({ extended: true }));
@@ -25,6 +34,8 @@ app.get('/api', (req, res) => {
 
 app.use('/api/products', productsRouter);
 app.use('/api/orders', ordersRouter);
+app.use('/api/user', usersRouter);
+app.use('/api/login', authRouter);
 
 app.use((err, req, res, next) => {
   console.log(err);

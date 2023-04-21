@@ -1,14 +1,14 @@
 //products schema
 import { Schema } from 'mongoose';
 
-const ordersSchema = new Schema(
+const usersSchema = new Schema(
   {
     user_name: {
       type: String,
       required: true,
     },
     password: {
-      type: Number,
+      type: String,
       required: true,
     },
     email: {
@@ -19,6 +19,9 @@ const ordersSchema = new Schema(
       type: String,
       required: true,
     },
+    address: {
+      type: String,
+    },
     user_point: {
       type: Number,
       required: true,
@@ -28,7 +31,7 @@ const ordersSchema = new Schema(
   { timestamps: true }
 );
 
-export { ordersSchema };
+export { usersSchema };
 
 /*
 Table user {
