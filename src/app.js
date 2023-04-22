@@ -61,7 +61,7 @@ app.get('/api', (req, res) => {
 //라우터 연결
 app.use('/api/products', productsRouter);
 app.use('/api/orders', ordersRouter);
-app.use('/api', usersRouter);
+app.use('/api/user', usersRouter);
 app.use('/api/login', authRouter);
 
 //오류처리 미들웨어

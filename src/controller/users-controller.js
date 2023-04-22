@@ -6,9 +6,17 @@ const usersController = {
   //회원 가입
   joinUser: async (req, res, next) => {
     try {
-      const { user_name, password, email, phone_number, address, user_point } =
-        req.body;
+      const {
+        user_id,
+        user_name,
+        password,
+        email,
+        phone_number,
+        address,
+        user_point,
+      } = req.body;
       const user = await usersService.joinUser(
+        user_id,
         user_name,
         password,
         email,
