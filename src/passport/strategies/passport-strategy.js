@@ -14,11 +14,12 @@ const local = new LocalStrategy(config, async (email, password, done) => {
     if (!user) {
       throw new Error('존재하지 않는 회원입니다.');
     }
-    if (user.password !== password) { //hashPassword(password)
+    if (user.password !== password) {
+      //hashPassword(password)
       throw new Error('비밀번호가 일치하지 않습니다.');
     }
 
-    done (null, {
+    done(null, {
       // shortId: user.shortId,
       email: user.email,
       name: user.user_name,
@@ -29,4 +30,4 @@ const local = new LocalStrategy(config, async (email, password, done) => {
   }
 });
 
-export {local};
+export { local };

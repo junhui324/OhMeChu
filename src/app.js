@@ -2,7 +2,7 @@ import express, { json, urlencoded } from 'express';
 import cors from 'cors';
 import { mongoose } from 'mongoose';
 import passport from 'passport';
-import {usePassport} from './passport/index.js';
+import { usePassport } from './passport/index.js';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 
@@ -13,14 +13,13 @@ import { ordersRouter } from './router/orders-router.js';
 import { usersRouter } from './router/users-router.js';
 import { authRouter } from './router/auth-router.js';
 
-
 const port = 8080;
 const app = express();
 
 // app.unsubscribe(cors())
 
 const corsOptions = {
-  origin: 'https://example.com'
+  origin: 'https://example.com',
 };
 
 app.use(cors(corsOptions));
@@ -32,17 +31,19 @@ usePassport();
 
 const store = MongoStore.create({
   mongoUrl: process.env.MONGODB_URI,
-  ttl: 14*24*60,
+  ttl: 14 * 24 * 60,
 });
 
-app.use(session({
-	secret: process.env.SESSION_KEY,
-	resave: false,
-	saveUninitialized: true,
-	// secure: true,
-	httpOnly: true,
-  store: store
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_KEY,
+    resave: false,
+    saveUninitialized: true,
+    // secure: true,
+    httpOnly: true,
+    store: store,
+  })
+);
 app.use(passport.initialize());
 
 //json parser
