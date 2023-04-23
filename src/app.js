@@ -13,7 +13,7 @@ import { ordersRouter } from './router/orders-router.js';
 import { usersRouter } from './router/users-router.js';
 import { authRouter } from './router/auth-router.js';
 
-const port = 8080;
+const port = 5000;
 const app = express();
 
 // app.unsubscribe(cors())
@@ -61,7 +61,7 @@ app.get('/api', (req, res) => {
 //라우터 연결
 app.use('/api/products', productsRouter);
 app.use('/api/orders', ordersRouter);
-app.use('/api/user', usersRouter);
+app.use('/api/users', usersRouter);
 app.use('/api/login', authRouter);
 
 //오류처리 미들웨어
