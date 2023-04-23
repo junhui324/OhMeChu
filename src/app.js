@@ -13,7 +13,6 @@ import { ordersRouter } from './router/orders-router.js';
 import { usersRouter } from './router/users-router.js';
 import { authRouter } from './router/auth-router.js';
 
-const port = 5000;
 const app = express();
 
 // app.unsubscribe(cors())
@@ -74,6 +73,11 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`서버가 정상적으로 시작되었습니다. 포트번호: ${port}`);
-});
+const startServer = (port) => {
+  app.listen(port, () => {
+    console.log(`서버가 정상적으로 시작되었습니다. 포트번호: ${port}`);
+  });
+};
+
+startServer(5000);
+startServer(5001);
