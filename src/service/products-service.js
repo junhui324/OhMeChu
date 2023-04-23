@@ -82,14 +82,18 @@ const productsService = {
   },
 
   getRecommendedList: async () => {
-    const productsAll = await Products.find({ recommended: 1 }).limit(12);
+    const productsAmount = 12;
+    const productsAll = await Products.find({ recommended: 1 }).limit(
+      productsAmount
+    );
     return productsAll;
   },
 
   getNewProductsList: async () => {
+    const productsAmount = 12;
     const productsAll = await Products.find({})
       .sort({ createdAt: -1 })
-      .limit(12);
+      .limit(productsAmount);
     return productsAll;
   },
 };

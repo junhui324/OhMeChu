@@ -1,8 +1,6 @@
-import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Users } from '../../db/model/index.js';
-
-// import hashPassword from '../../utils/hash-password';
+import bcrypt, { hash } from 'bcrypt';
 
 const config = {
   usernameField: 'email',
@@ -11,12 +9,12 @@ const config = {
 
 const local = new LocalStrategy(config, async (email, password, done) => {
   try {
-    const user = await Users.findOne({ email });
+    const user = await Users.findById({ email });
+    const hashPassword = await bcrypt.hash(password, 12);
     if (!user) {
       throw new Error('존재하지 않는 회원입니다.');
     }
-    if (user.password !== password) {
-      //hashPassword(password)
+    if (user.password !== hashPassword) {
       throw new Error('비밀번호가 일치하지 않습니다.');
     }
 
@@ -29,18 +27,6 @@ const local = new LocalStrategy(config, async (email, password, done) => {
   } catch (err) {
     done(err, null);
   }
-});
-
-passport.serializeUser((user, done) => {
-  console.log('serialize');
-  done(null, user);
-});
-
-passport.deserializeUser((user, done) => {
-  findById(email, (err, user) => {
-    console.log('deserialize');
-    done(null, user);
-  });
 });
 
 export { local };

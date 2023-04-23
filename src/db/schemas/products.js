@@ -14,7 +14,7 @@ const productsSchema = new Schema(
       type: Number,
       required: true,
     },
-    img_url: {
+    src: {
       type: String,
       required: true,
     },
@@ -26,7 +26,7 @@ const productsSchema = new Schema(
       type: String,
       default: '설명이 없습니다.',
     },
-    sub_description: {
+    subDescription: {
       type: [String],
       default: ['미지정', '미지정', '미지정'],
     },

@@ -6,7 +6,10 @@ const authRouter = Router();
 authRouter.post(
   '/',
 
-  passport.authenticate('local', { failureRedirect: '/login' }),
+  passport.authenticate('local', {
+    failureRedirect: '/login',
+    successRedirect: '/',
+  }),
   function (req, res) {
     res.redirect('/');
   }

@@ -3,16 +3,16 @@ import { Schema } from 'mongoose';
 
 const ordersSchema = new Schema(
   {
-    order_detail: {
+    orderDetail: {
       //상품 id, 해당 상품 수량(문자열로 저장되니 추후 parseInt로 바꿔서 써야합니다)
       type: [String, Number],
       default: ['', 0],
     },
-    user_name: {
+    userName: {
       type: String,
       required: true,
     },
-    phone_number: {
+    phoneNumber: {
       type: String,
       required: true,
     },
@@ -24,20 +24,20 @@ const ordersSchema = new Schema(
       type: String,
       required: true,
     },
-    purchase_amount: {
+    purchaseAmount: {
       type: Number,
       required: true,
     },
-    delivery_fee: {
+    deliveryFee: {
       type: Number,
       required: true,
     },
-    total_amount: {
+    totalAmount: {
       type: Number,
       required: true,
       default: 0,
     },
-    order_state: {
+    orderState: {
       //"상품 준비 중" 일 때만 "배송지 수정 / 주문 취소" 가능
       type: String,
       required: true,

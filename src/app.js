@@ -5,6 +5,7 @@ import passport from 'passport';
 import { usePassport } from './passport/index.js';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
+import { Users } from './db/model/index.js';
 
 require('dotenv').config();
 
@@ -21,13 +22,14 @@ mongoose.connect(process.env.MONGODB_URI);
 
 //passport 전략 등록
 
-usePassport();
+// usePassport();
 
 const store = MongoStore.create({
   mongoUrl: process.env.MONGODB_URI,
   ttl: 24 * 60 * 60,
 });
 
+app.use(passport.initialize());
 app.use(
   session({
     secret: process.env.SESSION_KEY,
@@ -38,7 +40,22 @@ app.use(
     store: store,
   })
 );
-app.use(passport.initialize());
+
+//serialize
+passport.serializeUser((user, done) => {
+  console.log('serialize');
+  done(null, user.email);
+});
+
+passport.deserializeUser(async (email, done) => {
+  await Users.findById(email, (err, user) => {
+    console.log('deserialize');
+    done(err, user);
+  });
+});
+
+//passport 전략 등록
+usePassport();
 
 //json parser
 app.use(json());
