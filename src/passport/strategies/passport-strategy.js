@@ -1,3 +1,4 @@
+import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Users } from '../../db/model/index.js';
 
@@ -28,6 +29,18 @@ const local = new LocalStrategy(config, async (email, password, done) => {
   } catch (err) {
     done(err, null);
   }
+});
+
+passport.serializeUser((user, done) => {
+  console.log('serialize');
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  findById(email, (err, user) => {
+    console.log('deserialize');
+    done(null, user);
+  });
 });
 
 export { local };

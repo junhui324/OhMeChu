@@ -52,23 +52,25 @@ const productsService = {
 
   getProductsList: async (sortingKey = 'recommended') => {
     let sortField = {}; //db에 판매량 추가 시, default를 판매량으로 변경 예정(후순위 고려사항)
+    const descSort = -1;
+    const escSort = 1;
     if (sortingKey === 'best') {
-      sortField = { recommended: -1 };
+      sortField = { recommended: descSort };
     }
     if (sortingKey === 'latest') {
-      sortField = { createdAt: -1 };
+      sortField = { createdAt: descSort };
     }
     if (sortingKey === 'highPrice') {
-      sortField = { price: -1 };
+      sortField = { price: descSort };
     }
     if (sortingKey === 'lowPrice') {
-      sortField = { price: 1 };
+      sortField = { price: escSort };
     }
     if (sortingKey === 'descName') {
-      sortField = { name: -1 };
+      sortField = { name: descSort };
     }
     if (sortingKey === 'escName') {
-      sortField = { name: 1 };
+      sortField = { name: escSort };
     }
     const productsAll = await Products.find({}).sort(sortField);
     return productsAll;

@@ -13,15 +13,10 @@ import { ordersRouter } from './router/orders-router.js';
 import { usersRouter } from './router/users-router.js';
 import { authRouter } from './router/auth-router.js';
 
+import { errorMiddlewares } from './middlewares/error-middlewares.js';
+
 const app = express();
 
-// app.unsubscribe(cors())
-
-const corsOptions = {
-  origin: 'https://example.com',
-};
-
-app.use(cors(corsOptions));
 mongoose.connect(process.env.MONGODB_URI);
 
 //passport 전략 등록
@@ -30,7 +25,7 @@ usePassport();
 
 const store = MongoStore.create({
   mongoUrl: process.env.MONGODB_URI,
-  ttl: 14 * 24 * 60,
+  ttl: 24 * 60 * 60,
 });
 
 app.use(
@@ -63,15 +58,7 @@ app.use('/api/orders', ordersRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/login', authRouter);
 
-//오류처리 미들웨어
-app.use((err, req, res, next) => {
-  console.log(err);
-  res.statusCode = err.httpCode ?? 500;
-  res.json({
-    data: null,
-    error: err.message,
-  });
-});
+app.use(errorMiddlewares);
 
 const startServer = (port) => {
   app.listen(port, () => {
