@@ -6,13 +6,14 @@ const authMiddleware = (req, res, next) => {
       return next(err);
     }
     if (!user) {
-      return res.redirect('/login');
+      return res.redirect('/api/login');
     }
     req.logIn(user, (err) => {
       if (err) {
         return next(err);
       }
-      return res.redirect('/');
+      console.log(req.session);
+      return res.redirect('/api');
     });
   })(req, res, next);
 };
