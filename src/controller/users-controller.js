@@ -7,23 +7,24 @@ const usersController = {
   joinUser: async (req, res, next) => {
     try {
       const {
-        user_id,
-        user_name,
+        userName,
         password,
         email,
-        phone_number,
+        phoneNumber,
+        gender,
         address,
-        user_point,
+        userPoint,
       } = req.body;
-      const user = await usersService.joinUser(
-        user_id,
-        user_name,
-        password,
-        email,
-        phone_number,
-        address,
-        user_point
-      );
+      const userObj = {
+        userName: userName,
+        password: password,
+        email: email,
+        phoneNumber: phoneNumber,
+        gender: gender,
+        address: address,
+        userPoint: userPoint,
+      };
+      const user = await usersService.joinUser(userObj);
       res.json(user);
     } catch (err) {
       next(err);

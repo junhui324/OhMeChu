@@ -35,7 +35,6 @@ app.use(
     secret: process.env.SESSION_KEY,
     resave: false,
     saveUninitialized: true,
-    // secure: true,
     httpOnly: true,
     store: store,
   })
@@ -43,12 +42,12 @@ app.use(
 
 //serialize
 passport.serializeUser((user, done) => {
-  console.log('serialize');
+  console.log('serialize', user);
   done(null, user.email);
 });
 
 passport.deserializeUser(async (email, done) => {
-  await Users.findById(email, (err, user) => {
+  await Users.findOne({ email }, (err, user) => {
     console.log('deserialize');
     done(err, user);
   });

@@ -1,18 +1,8 @@
 import { Router } from 'express';
-import passport from 'passport';
+import { authMiddleware } from '../middlewares/passport-middlewares.js';
 
 const authRouter = Router();
 
-authRouter.post(
-  '/',
-
-  passport.authenticate('local', {
-    failureRedirect: '/login',
-    successRedirect: '/',
-  }),
-  function (req, res) {
-    res.redirect('/');
-  }
-);
+authRouter.post('/', authMiddleware);
 
 export { authRouter };
