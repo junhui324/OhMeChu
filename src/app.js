@@ -72,7 +72,7 @@ app.get('/api', (req, res) => {
 app.use('/api/products', productsRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/users', usersRouter);
-app.use('/api/login', authRouter);
+app.use('/api', authRouter);
 
 app.use(errorMiddlewares);
 
