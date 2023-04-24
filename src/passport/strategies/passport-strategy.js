@@ -1,7 +1,6 @@
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Users } from '../../db/model/index.js';
-
-// import hashPassword from '../../utils/hash-password';
+import bcrypt from 'bcrypt';
 
 const config = {
   usernameField: 'email',
@@ -14,19 +13,22 @@ const local = new LocalStrategy(config, async (email, password, done) => {
     if (!user) {
       throw new Error('존재하지 않는 회원입니다.');
     }
-    if (user.password !== password) { //hashPassword(password)
+    const isPassword = await bcrypt.compare(password, user.password);
+    if (!isPassword) {
       throw new Error('비밀번호가 일치하지 않습니다.');
     }
-
-    done (null, {
-      // shortId: user.shortId,
-      email: user.email,
-      name: user.user_name,
-      // passwordReset: user.passwordReset,
-    });
+    if (user && isPassword) {
+      done(null, {
+        // shortId: user.shortId,
+        email: user.email,
+        name: user.userName,
+        // passwordReset: user.passwordReset,
+      });
+      console.log('로그인 성공! 홈 화면으로 이동');
+    }
   } catch (err) {
     done(err, null);
   }
 });
 
-export {local};
+export { local };

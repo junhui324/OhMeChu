@@ -3,41 +3,42 @@ import { Schema } from 'mongoose';
 
 const ordersSchema = new Schema(
   {
-    order_detail: {
+    orderDetail: {
       //상품 id, 해당 상품 수량(문자열로 저장되니 추후 parseInt로 바꿔서 써야합니다)
-      type: [String, Number],
-      default: ['', 0],
+      //[{id: id, amount: 2}, {id: id, amount: 3}]
+      type: Array,
+      required: true,
     },
-    user_name: {
+    userName: {
       type: String,
       required: true,
     },
-    phone_number: {
+    phoneNumber: {
       type: String,
       required: true,
     },
     address: {
-      type: String,
+      type: Object,
       required: true,
     },
     requirement: {
       type: String,
       required: true,
     },
-    purchase_amount: {
+    purchaseAmount: {
       type: Number,
       required: true,
     },
-    delivery_fee: {
+    deliveryFee: {
       type: Number,
       required: true,
     },
-    total_amount: {
+    totalAmount: {
       type: Number,
       required: true,
       default: 0,
     },
-    order_state: {
+    orderState: {
       //"상품 준비 중" 일 때만 "배송지 수정 / 주문 취소" 가능
       type: String,
       required: true,
@@ -48,6 +49,8 @@ const ordersSchema = new Schema(
   { versionKey: false }
 );
 
+//우편번호 도로명주소 옛날주소 상세주소 참고사항(아파트이름) -> 5개 배열
+//_id 를 id로
 export { ordersSchema };
 /*
 {
