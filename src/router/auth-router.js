@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import { authMiddleware } from '../middlewares/passport-middlewares.js';
+import { authMiddlewares } from '../middlewares/auth-middlewares.js';
 
 const authRouter = Router();
 
-authRouter.post('/login', authMiddleware.isLoginSucceed);
-authRouter.get('/logout', authMiddleware.logout);
+authRouter.get('/myPage', authMiddlewares.isIssueSucceed);
+authRouter.post('/login', authMiddlewares.isLoginSucceed);
+authRouter.get('/logout', authMiddlewares.logout);
 
 export { authRouter };

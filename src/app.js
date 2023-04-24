@@ -3,8 +3,9 @@ import cors from 'cors';
 import { mongoose } from 'mongoose';
 import passport from 'passport';
 import { usePassport } from './passport/index.js';
-import session from 'express-session';
-import MongoStore from 'connect-mongo';
+// import session from 'express-session'; //session 사용
+// import MongoStore from 'connect-mongo'; //seesion store
+import cookieParser from 'cookie-parser'; //JWT 토큰 사용시 필요한 cookieParser
 import { Users } from './db/model/index.js';
 
 require('dotenv').config();
@@ -20,10 +21,8 @@ const app = express();
 
 mongoose.connect(process.env.MONGODB_URI);
 
-//passport 전략 등록
-
-// usePassport();
-
+//session store
+/*
 const store = MongoStore.create({
   mongoUrl: process.env.MONGODB_URI,
   ttl: 24 * 60 * 60,
@@ -39,6 +38,8 @@ app.use(
     store: store,
   })
 );
+*/
+app.use(cookieParser());
 
 //serialize
 passport.serializeUser((user, done) => {

@@ -11,11 +11,13 @@ const local = new LocalStrategy(config, async (email, password, done) => {
   try {
     const user = await Users.findOne({ email });
     if (!user) {
-      throw new Error('존재하지 않는 회원입니다.');
+      return done(null, false, { message: '존재하지 않는 회원입니다.' });
     }
     const isPassword = await bcrypt.compare(password, user.password);
     if (!isPassword) {
-      throw new Error('비밀번호가 일치하지 않습니다.');
+      return done(null, false, {
+        message: '비밀번호가 일치하지 않습니다.',
+      });
     }
     if (user && isPassword) {
       done(null, {
