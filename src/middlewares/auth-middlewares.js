@@ -19,7 +19,7 @@ const authMiddlewares = {
           return next(err);
         }
         console.log(req.session);
-        // const token = authServices.issueJWT(user);
+        const token = authServices.issueJWT(user);
         return res.redirect('/api');
       });
     })(req, res, next);
