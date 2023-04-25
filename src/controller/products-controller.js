@@ -24,6 +24,7 @@ const productsController = {
         sub_description,
         recommended,
       } = req.body;
+
       const productObj = {
         name: name,
         price: price,
@@ -119,6 +120,7 @@ const productsController = {
       next(err);
     }
   },
+
   //추가
 };
 

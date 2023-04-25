@@ -1,5 +1,3 @@
-// 비즈니스 로직을 수행하는 코드 -> controller로 전달
-
 import { Users } from '../db/model/index.js';
 import bcrypt from 'bcrypt';
 
@@ -39,6 +37,12 @@ const usersService = {
       console.log('비밀번호가 다릅니다.');
       return;
     }
+  },
+
+  isMember: async (email, password) => {
+    const memberInfo = await Users.findOne({ email });
+    const isPasswordTrue = await bcrypt.compare(password, memberInfo.password);
+    return { memberInfo, isPasswordTrue };
   },
 
   //사용자 정보 조회

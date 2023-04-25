@@ -1,6 +1,6 @@
 import passport from 'passport';
-import { local } from './strategies/passport-strategy';
+import { jwt } from './strategies/jwt-strategy.js';
 
 export const usePassport = () => {
-  passport.use(local);
+  passport.use(jwt);
 };
