@@ -5,8 +5,9 @@ const ordersSchema = new Schema(
   {
     orderDetail: {
       //상품 id, 해당 상품 수량(문자열로 저장되니 추후 parseInt로 바꿔서 써야합니다)
-      type: [String, Number],
-      default: ['', 0],
+      //[{id: id, amount: 2}, {id: id, amount: 3}]
+      type: Array,
+      required: true,
     },
     userName: {
       type: String,
@@ -17,7 +18,7 @@ const ordersSchema = new Schema(
       required: true,
     },
     address: {
-      type: String,
+      type: Object,
       required: true,
     },
     requirement: {
@@ -48,6 +49,8 @@ const ordersSchema = new Schema(
   { versionKey: false }
 );
 
+//우편번호 도로명주소 옛날주소 상세주소 참고사항(아파트이름) -> 5개 배열
+//_id 를 id로
 export { ordersSchema };
 /*
 {

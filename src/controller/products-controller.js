@@ -24,15 +24,17 @@ const productsController = {
         sub_description,
         recommended,
       } = req.body;
-      const newProduct = await productsService.addProduct(
-        name,
-        price,
-        img_url,
-        category,
-        description,
-        sub_description,
-        recommended
-      );
+
+      const productObj = {
+        name: name,
+        price: price,
+        img_url: img_url,
+        category: category,
+        description: description,
+        sub_description: sub_description,
+        recommended: recommended,
+      };
+      const newProduct = await productsService.addProduct(productObj);
       res.json(newProduct);
     } catch (err) {
       next(err);
@@ -79,6 +81,8 @@ const productsController = {
     }
   },
 
+  //=======================================================
+  //조건(가격, 상품명, 카테고리, 신상품 등)에 따라 상품 get
   getProductsList: async (req, res, next) => {
     try {
       const sortingKey = req.query.sort;

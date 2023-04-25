@@ -10,7 +10,7 @@ require('dotenv').config();
 import { productsRouter } from './router/products-router.js';
 import { ordersRouter } from './router/orders-router.js';
 import { usersRouter } from './router/users-router.js';
-
+import { categoryRouter } from './router/category-router.js';
 import { errorMiddlewares } from './middlewares/error-middlewares.js';
 
 const app = express();
@@ -39,8 +39,10 @@ app.get('/api', (req, res) => {
 app.use('/api/products', productsRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/category', categoryRouter);
 // app.use('/api', authRouter);
 
+//오류처리 미들웨어
 app.use(errorMiddlewares);
 
 const startServer = (port) => {
@@ -50,4 +52,3 @@ const startServer = (port) => {
 };
 
 startServer(5000);
-startServer(5001);

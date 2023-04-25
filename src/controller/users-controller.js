@@ -15,6 +15,7 @@ const usersController = {
         gender,
         address,
         userPoint,
+        orderNumber,
       } = req.body;
       const userObj = {
         userName: userName,
@@ -24,6 +25,7 @@ const usersController = {
         gender: gender,
         address: address,
         userPoint: userPoint,
+        orderNumber: orderNumber,
       };
       const user = await usersService.joinUser(userObj);
       res.json(user);
@@ -83,6 +85,41 @@ const usersController = {
     }
   },
 
+  //사용자 정보 조회
+  getProfile: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { password } = req.body;
+      const user = await usersService.getProfile(id, password);
+      res.json(user);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  //사용자 정보 삭제 (탈퇴)
+  deleteProfile: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { password } = req.body;
+      const user = await usersService.deleteProfile(id, password);
+      res.json(user);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  //주문 정보 저장
+  addOrderNumber: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { orderNumber } = req.body;
+      const user = await usersService.addOrderNumber(id, orderNumber);
+      res.json(user);
+    } catch (err) {
+      next(err);
+    }
+  },
   //추가
 };
 

@@ -4,14 +4,18 @@ logs
 *.log
 npm-debug.log*
 
-
-
-
 # Dependency directories
 node_modules/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
 
 # dotenv environment variable files
 .env
 
 ###package.json
 package-lock.json
+
