@@ -11,7 +11,7 @@ const productsSchema = new Schema(
       required: true,
     },
     price: {
-      type: Number,
+      type: String,
       required: true,
     },
     src: {
@@ -31,7 +31,7 @@ const productsSchema = new Schema(
       default: ['미지정', '미지정', '미지정'],
     },
     recommended: {
-      type: Number,
+      type: String,
       default: 0,
     },
   },

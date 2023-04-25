@@ -9,6 +9,10 @@ const ordersSchema = new Schema(
       type: Array,
       required: true,
     },
+    email: {
+      type: String,
+      default: null,
+    },
     userName: {
       type: String,
       required: true,
@@ -26,15 +30,15 @@ const ordersSchema = new Schema(
       required: true,
     },
     purchaseAmount: {
-      type: Number,
+      type: String,
       required: true,
     },
     deliveryFee: {
-      type: Number,
+      type: String,
       required: true,
     },
     totalAmount: {
-      type: Number,
+      type: String,
       required: true,
       default: 0,
     },

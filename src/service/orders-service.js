@@ -13,8 +13,11 @@ const orderStates = {
 const ordersService = {
   //주문 정보 저장 (구현)
   addOrder: async (orderObj) => {
-    orderObj.totalAmount =
-      parseInt(orderObj.purchaseAmount) + parseInt(orderObj.deliveryFee);
+    const purchaseAmount = orderObj.purchaseAmount.replace(',', '');
+    const deliveryFee = orderObj.deliveryFee.replace(',', '');
+    orderObj.totalAmount = (
+      parseInt(purchaseAmount) + parseInt(deliveryFee)
+    ).toLocaleString('ko-KR');
     const order = await Orders.create(orderObj);
     return order;
   },
