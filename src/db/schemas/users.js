@@ -25,11 +25,7 @@ const usersSchema = new Schema(
       default: '기타',
     },
     address: {
-<<<<<<< HEAD
-      type: Array,
-=======
       type: Object,
->>>>>>> a711e00dcdd1b48559ab87d1028d9a425788a739
       required: true,
     },
     userPoint: {
@@ -46,14 +42,3 @@ const usersSchema = new Schema(
 );
 
 export { usersSchema };
-
-//아이디 -> 이메일
-//성별 -> 남성 여성 기타
-//우편번호 도로명주소 옛날주소 상세주소 참고사항(아파트이름) -> 5개 배열
-<<<<<<< HEAD
-=======
-//주문 번호 저장할 수 있게 추가.
->>>>>>> a711e00dcdd1b48559ab87d1028d9a425788a739
-
-//order_detail 을 객체 배열로 바꾸기
-//_id를 id로 바꾸기
