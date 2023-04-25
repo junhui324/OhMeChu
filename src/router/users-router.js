@@ -15,6 +15,9 @@ usersRouter.put('/myPage/:id', usersController.changeProfile);
 //로그인
 usersRouter.post('/login', usersController.usersLogin);
 
+//로그아웃
+usersRouter.get('/logout', usersController.usersLogout);
+
 //마이페이지
 //usersRouter.get('/myPage', authMiddlewares.isVarifiedToken);
 

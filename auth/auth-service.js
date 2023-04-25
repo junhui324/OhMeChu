@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 const authServices = {
   issueJWT: (user) => {
     const payload = { el: user.email };
-    const secret = 'process.env.SECRET_KEY';
+    const secret = process.env.SECRET_KEY;
     const expiresIn = '1h';
     const token = jwt.sign(payload, secret, { expiresIn });
     return token;
