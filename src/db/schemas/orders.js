@@ -26,11 +26,11 @@ const ordersSchema = new Schema(
       required: true,
     },
     purchaseAmount: {
-      type: Number,
+      type: String,
       required: true,
     },
     deliveryFee: {
-      type: Number,
+      type: String,
       required: true,
     },
     totalAmount: {
