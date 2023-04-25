@@ -2,33 +2,48 @@
 
 import { Products } from '../db/model/index.js';
 
+const descSort = -1;
+const ascSort = 1;
+
+const category = {
+  korean: 'korean',
+  chinese: 'chinese',
+  western: 'western',
+  japanese: 'japanese',
+};
+
+const sortMap = new Map([
+  ['best', { recommended: descSort }],
+  ['latest', { createdAt: descSort }],
+  ['highPrice', { price: descSort }],
+  ['lowPrice', { price: ascSort }],
+  ['descName', { name: descSort }],
+  ['ascName', { name: ascSort }],
+]);
+
+const categoryMap = new Map([
+  ['korean', async () => Products.find({ category: category.korean })],
+  ['chinese', async () => Products.find({ category: category.chinese })],
+  ['western', async () => Products.find({ category: category.western })],
+  ['japanese', async () => Products.find({ category: category.japanese })],
+]);
+
 const productsService = {
+  //관리자 - 전체 상품 조회
   addProductsList: async (arr) => {
     const addProductsList = await Products.create(arr);
     return addProductsList;
   },
 
-  addProduct: async (
-    name,
-    price,
-    img_url,
-    category,
-    description,
-    sub_description,
-    recommended
-  ) => {
+  //관리자 - 상품 하나 추가
+  addProduct: async (productObj) => {
     const addProduct = await Products.create({
-      name,
-      price,
-      img_url,
-      category,
-      description,
-      sub_description,
-      recommended,
+      productObj,
     });
     return addProduct;
   },
 
+  //관리자 - 상품 정보 여러개 업데이트
   updateProductsList: async (filterField, filterContents, field, contents) => {
     const product = await Products.updateMany(
       { [filterField]: filterContents },
@@ -37,6 +52,7 @@ const productsService = {
     return product;
   },
 
+  //관리자 - 상품 정보 업데이트 (ex) 카테고리 수정)
   updateProduct: async (id, updateField, contents) => {
     //field는 객체
     const product = await Products.findByIdAndUpdate(id, {
@@ -45,33 +61,19 @@ const productsService = {
     return product;
   },
 
+  //관리자 - 상품 삭제
   deleteProduct: async (id) => {
     const product = await Products.findByIdAndDelete(id);
     return product;
   },
 
+  //===================================================================
+  //조건에 따라 상품 get
   getProductsList: async (sortingKey = 'recommended') => {
-    let sortField = {}; //db에 판매량 추가 시, default를 판매량으로 변경 예정(후순위 고려사항)
-    const descSort = -1; //map 함수 써서 수정
-    //sortField = { recommended: descSort }; 맵 객체(추상적) {[sortkey.best]: recommended: descSort, …}
-    const escSort = 1;
-    if (sortingKey === 'best') {
-      sortField = { recommended: descSort };
-    }
-    if (sortingKey === 'latest') {
-      sortField = { createdAt: descSort };
-    }
-    if (sortingKey === 'highPrice') {
-      sortField = { price: descSort };
-    }
-    if (sortingKey === 'lowPrice') {
-      sortField = { price: escSort };
-    }
-    if (sortingKey === 'descName') {
-      sortField = { name: descSort };
-    }
-    if (sortingKey === 'escName') {
-      sortField = { name: escSort };
+    let sortField = sortMap.get(sortingKey) || {};
+    const categoryFunction = categoryMap.get(sortingKey);
+    if (categoryFunction) {
+      return await categoryFunction();
     }
     const productsAll = await Products.find({}).sort(sortField);
     return productsAll;
@@ -83,19 +85,14 @@ const productsService = {
   },
 
   getRecommendedList: async () => {
-    const productsAmount = 12;
-    const productsAll = await Products.find({ recommended: 1 }).limit(
-      //프론트 단에서 처리하도록
-      productsAmount
-    );
+    const productsAll = await Products.find({ recommended: 1 }).limit(12);
     return productsAll;
   },
 
   getNewProductsList: async () => {
-    const productsAmount = 12;
     const productsAll = await Products.find({})
       .sort({ createdAt: -1 })
-      .limit(productsAmount);
+      .limit(12);
     return productsAll;
   },
 };

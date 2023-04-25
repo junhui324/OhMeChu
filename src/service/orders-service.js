@@ -2,31 +2,20 @@
 
 import { Orders } from '../db/model/index.js';
 
+// 주문 상태 문자열 열거형
+const orderStates = {
+  productReady: '상품 준비 중',
+  deliveryReady: '배송 준비 중',
+  courierDelivery: '배송 중',
+  deliveryCompleted: '배송 완료',
+};
+
 const ordersService = {
   //주문 정보 저장 (구현)
-  addOrder: async (
-    order_detail,
-    user_name,
-    phone_number,
-    address,
-    requirement,
-    purchase_amount,
-    delivery_fee,
-    total_amount,
-    order_state
-  ) => {
-    total_amount = parseInt(purchase_amount) + parseInt(delivery_fee);
-    const order = await Orders.create({
-      order_detail,
-      user_name,
-      phone_number,
-      address,
-      requirement,
-      purchase_amount,
-      delivery_fee,
-      total_amount,
-      order_state,
-    });
+  addOrder: async (orderObj) => {
+    orderObj.totalAmount =
+      parseInt(orderObj.purchaseAmount) + parseInt(orderObj.deliveryFee);
+    const order = await Orders.create(orderObj);
     return order;
   },
 
@@ -42,35 +31,37 @@ const ordersService = {
     return order;
   },
 
-  //주문 id 활용해서 주문 정보 업데이트 -> 배송지 변겅 (order_state가 "상품 준비 중" 일 때)
-  updateOrder: async (id, address) => {
+  //주문 id 활용해서 해당 주문 내역 배송 상태 수정하기 (관리자 기능)
+  updateOrderState: async (id, orderState) => {
+    const order = await Orders.findByIdAndUpdate(id, {
+      orderState: orderState,
+    });
+    return order;
+  },
+
+  //주문 id 활용해서 주문 정보 업데이트 -> 배송지 변경 (orderState가 "상품 준비 중" 일 때)
+  updateOrder: async (id, changeAddress) => {
     const order = await Orders.findById(id).exec();
-    if (order.order_state === '상품 준비 중') {
+    if (order.orderState === orderStates.productReady) {
       const updatedResult = await Orders.updateOne(
         { _id: order._id },
-        { address: address }
+        { address: changeAddress }
       );
       return updatedResult;
     } else {
-      //상품 준비 중이 아닐 때, 프론트에서 수정하기 버튼을 아예 없애기..
-      //alert로 경고창 띄우기.. -> 에러남
-      //현재 아무 일도 안일어남 (에러 x, 수정 x)
-      //alert(`현재 ${order.order_state} 이므로 수정할 수 없습니다.`)
-      console.log(`현재 ${order.order_state} 이므로 수정할 수 없습니다.`);
+      console.log(`현재 ${order.orderState} 이므로 수정할 수 없습니다.`);
       return;
     }
   },
 
-  //주문 id 활용해서 주문 취소(삭제) 하기 -> 주문 취소 (order_state가 "상품 준비 중" 일 때)
+  //주문 id 활용해서 주문 취소(삭제) 하기 -> 주문 취소 (orderState가 "상품 준비 중" 일 때)
   deleteOrder: async (id) => {
     const order = await Orders.findById(id).exec();
-    if (order.order_state === '상품 준비 중') {
+    if (order.orderState === orderStates.productReady) {
       const deletedResult = await Orders.deleteOne({ _id: order._id });
       return deletedResult;
     } else {
-      //상품 준비 중이 아닐 때, 프론트에서 취소하기 버튼을 아예 없애기..
-      //현재 아무 일도 안일어남 (에러 x, 삭제 x)
-      console.log(`현재 ${order.order_state} 이므로 취소할 수 없습니다.`);
+      console.log(`현재 ${order.orderState} 이므로 취소할 수 없습니다.`);
       return;
     }
   },
@@ -82,11 +73,17 @@ export { ordersService };
 //userId = ObjectId('643e5d487671a822af54ff0f');
 //userId = userId.toString();
 /*
-updateOrder: async (id) => {
-  const order = await Orders.findByIdAndUpdate(id, {
-    new: true, //업데이트 후의 바뀐 정보 받아볼 수 있음
-    address: '업데이트 테스트',
-  });
-  return order;
-},
-*/
+  //주문 id 활용해서 주문 정보 업데이트 -> 배송지 변경 (orderState가 "상품 준비 중" 일 때)
+  updateOrder: async (id, currentAddress, changeAddress) => {
+    const order = await Orders.findById(id).exec();
+    if (order.orderState === orderStates.productReady) {
+      const updatedResult = await Orders.updateOne(
+        { _id: order._id, address: currentAddress },
+        { $set: { 'address.$': changeAddress } }
+      );
+      return updatedResult;
+    } else {
+      console.log(`현재 ${order.orderState} 이므로 수정할 수 없습니다.`);
+      return;
+    }
+    */

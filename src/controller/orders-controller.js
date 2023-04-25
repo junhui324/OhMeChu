@@ -7,27 +7,28 @@ const ordersController = {
   addOrder: async (req, res, next) => {
     try {
       const {
-        order_detail,
-        user_name,
-        phone_number,
+        orderDetail,
+        userName,
+        phoneNumber,
         address,
         requirement,
-        purchase_amount,
-        delivery_fee,
-        total_amount,
-        order_state,
+        purchaseAmount,
+        deliveryFee,
+        totalAmount,
+        orderState,
       } = req.body;
-      const order = await ordersService.addOrder(
-        order_detail,
-        user_name,
-        phone_number,
-        address,
-        requirement,
-        purchase_amount,
-        delivery_fee,
-        total_amount,
-        order_state
-      );
+      const orderObj = {
+        orderDetail: orderDetail,
+        userName: userName,
+        phoneNumber: phoneNumber,
+        address: address,
+        requirement: requirement,
+        purchaseAmount: purchaseAmount,
+        deliveryFee: deliveryFee,
+        totalAmount: totalAmount,
+        orderState: orderState,
+      };
+      const order = await ordersService.addOrder(orderObj);
       res.json(order);
     } catch (err) {
       next(err);
@@ -55,12 +56,24 @@ const ordersController = {
     }
   },
 
-  //주문 id 활용해서 주문 정보 업데이트 -> 배송지 변겅 (order_state가 "상품 준비 중" 일 때)
+  //주문 id 활용해서 해당 주문 내역 배송 상태 수정하기 (관리자 기능)
+  updateOrderState: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { orderState } = req.body;
+      const order = await ordersService.updateOrderState(id, orderState);
+      res.json(order);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  //주문 id 활용해서 주문 정보 업데이트 -> 배송지 변경 (order_state가 "상품 준비 중" 일 때)
   updateOrder: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const { address } = req.body;
-      const order = await ordersService.updateOrder(id, address);
+      const { changeAddress } = req.body;
+      const order = await ordersService.updateOrder(id, changeAddress);
       res.json(order);
     } catch (err) {
       next(err);
