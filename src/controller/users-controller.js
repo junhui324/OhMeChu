@@ -54,10 +54,11 @@ const usersController = {
   usersLogin: async (req, res, next) => {
     try {
       const { email, password } = req.body;
-      const { memberInfo, isPasswordTrue } = await usersService.isMember(
-        email,
-        password
-      );
+      const member = await usersService.isMember(email, password);
+      if (!member) {
+        throw new Error('이메일 또는 비밀번호가 틀렸습니다.');
+      }
+      const { memberInfo, isPasswordTrue } = member;
       if (!memberInfo || !isPasswordTrue) {
         throw new Error('이메일 또는 비밀번호가 틀렸습니다.');
       }

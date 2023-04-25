@@ -41,6 +41,9 @@ const usersService = {
 
   isMember: async (email, password) => {
     const memberInfo = await Users.findOne({ email });
+    if (!memberInfo) {
+      return;
+    }
     const isPasswordTrue = await bcrypt.compare(password, memberInfo.password);
     return { memberInfo, isPasswordTrue };
   },
