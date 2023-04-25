@@ -2,7 +2,7 @@
 
 import { Router } from 'express';
 import { usersController } from '../controller/users-controller.js';
-//import { authMiddlewares } from '../../auth/auth-middlewares.js';
+import { authMiddlewares } from '../../auth/auth-middlewares.js';
 
 const usersRouter = Router();
 
@@ -19,10 +19,14 @@ usersRouter.post('/login', usersController.usersLogin);
 usersRouter.get('/logout', usersController.usersLogout);
 
 //마이페이지
-//usersRouter.get('/myPage', authMiddlewares.isVarifiedToken);
+// usersRouter.get('/myPage', authMiddlewares.isVarifiedToken, );
 
 //사용자 정보 조회
-usersRouter.get('/myPage/:id', usersController.getProfile);
+usersRouter.get(
+  '/myPage/:id',
+  authMiddlewares.isVarifiedAccessToken,
+  usersController.getProfile
+);
 
 //사용자 정보 삭제 (탈퇴)
 usersRouter.delete('/myPage/:id', usersController.deleteProfile);
