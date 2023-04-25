@@ -1,9 +1,10 @@
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Users } from '../../db/model/index.js';
 
-const jwtOpts = {};
-jwtOpts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-jwtOpts.secretOrKey = process.env.SECRET_KEY;
+const jwtOpts = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: 'process.env.SECRET_KEY',
+};
 
 const jwt = new JwtStrategy(jwtOpts, async (jwtPayload, done) => {
   try {

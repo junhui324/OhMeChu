@@ -52,7 +52,8 @@ const productsService = {
 
   getProductsList: async (sortingKey = 'recommended') => {
     let sortField = {}; //db에 판매량 추가 시, default를 판매량으로 변경 예정(후순위 고려사항)
-    const descSort = -1;
+    const descSort = -1; //map 함수 써서 수정
+    //sortField = { recommended: descSort }; 맵 객체(추상적) {[sortkey.best]: recommended: descSort, …}
     const escSort = 1;
     if (sortingKey === 'best') {
       sortField = { recommended: descSort };
@@ -84,6 +85,7 @@ const productsService = {
   getRecommendedList: async () => {
     const productsAmount = 12;
     const productsAll = await Products.find({ recommended: 1 }).limit(
+      //프론트 단에서 처리하도록
       productsAmount
     );
     return productsAll;

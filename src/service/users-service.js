@@ -37,6 +37,12 @@ const usersService = {
       return;
     }
   },
+
+  isMember: async (email, password) => {
+    const memberInfo = await Users.findOne({ email });
+    const isPasswordTrue = await bcrypt.compare(password, memberInfo.password);
+    return { memberInfo, isPasswordTrue };
+  },
 };
 
 export { usersService };

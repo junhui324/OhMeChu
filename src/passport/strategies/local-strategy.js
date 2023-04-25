@@ -1,3 +1,4 @@
+/*
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Users } from '../../db/model/index.js';
 import bcrypt from 'bcrypt';
@@ -8,6 +9,7 @@ const config = {
 };
 
 const local = new LocalStrategy(config, async (email, password, done) => {
+  //인증만 하도록 => refresh 토큰, 또는 만료 토큰 => 만료기간을 조회하고 만료하면 만료된 토큰이라 응답
   try {
     const user = await Users.findOne({ email });
     if (!user) {
@@ -34,3 +36,4 @@ const local = new LocalStrategy(config, async (email, password, done) => {
 });
 
 export { local };
+*/
