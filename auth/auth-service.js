@@ -1,9 +1,11 @@
 import jwt from 'jsonwebtoken';
+import { RefreshToken } from '../src/db/model/index.js';
+require('dotenv').config();
 
 //JWT 생성
 const authServices = {
   issueAccessJWT: (user) => {
-    const payload = { el: user.email }; //el: email, rl: customer
+    const payload = { el: user.email }; //el: email, au: customer
     const secret = process.env.SECRET_KEY;
     const expiresIn = '1h';
     const accessToken = jwt.sign(payload, secret, { expiresIn });
@@ -15,6 +17,23 @@ const authServices = {
     const expiresIn = '15d';
     const refreshToken = jwt.sign(payload, secret, { expiresIn });
     return refreshToken;
+  },
+
+  decodedAccessToken: (accessToken) => {
+    const decodedAccessToken = jwt.verify(accessToken, process.env.SECRET_KEY);
+    if (decodedAccessToken && decodedAccessToken.el) {
+      return decodedAccessToken.el;
+    }
+    return;
+  },
+
+  restoreRefreshJWT: async (refreshToken, memberEmail, expiresIn) => {
+    const restoreRefreshJWT = await RefreshToken.create({
+      refreshToken,
+      memberEmail,
+      expiresIn,
+    });
+    return restoreRefreshJWT;
   },
 };
 

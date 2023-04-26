@@ -63,13 +63,22 @@ const usersController = {
         throw new Error('이메일 또는 비밀번호가 틀렸습니다.');
       }
       const refreshToken = authServices.issueRefreshJWT(memberInfo); //사용자 정보를 담은 객체:memberInfo
+      const expiresIn = new Date();
+      expiresIn.setDate(expiresIn.getDate() + 15);
+      const memberEmail = memberInfo.email;
+      await authServices.restoreRefreshJWT(
+        //db에 refresh token 저장
+        refreshToken,
+        memberEmail,
+        expiresIn
+      );
       const accessToken = authServices.issueAccessJWT(memberInfo);
-      res.cookie('refreshToken', refreshToken, {
+      res.cookie('accessToken', accessToken, {
         httpOnly: true,
         secure: true, // HTTPS 연결에서만 쿠키 전송
         sameSite: 'none', // Cross-site 요청에서도 쿠키 전송
       });
-      res.status(200).json({ accessToken });
+      res.redirect('/api');
     } catch (err) {
       return next(err);
     }
@@ -77,7 +86,7 @@ const usersController = {
 
   usersLogout: async (req, res, next) => {
     try {
-      res.clearCookie('refreshToken');
+      res.clearCookie('accessToken');
       res.redirect('/api/users/login'); //추후 수정
     } catch (err) {
       return next(err);
