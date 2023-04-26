@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { RefreshToken } from './model/index.js';
+//import { RefreshToken } from './model/index.js';
 
 //JWT 생성
 const authServices = {
@@ -17,6 +17,7 @@ const authServices = {
     const refreshToken = jwt.sign(payload, secret, { expiresIn });
     return refreshToken;
   },
+  /*
   restoreRefreshJWT: async (refreshToken) => {
     const restoreRefreshJWT = await RefreshToken.create({
       refreshToken,
@@ -26,7 +27,7 @@ const authServices = {
     await refreshToken.save();
     return restoreRefreshJWT;
   },
-
+*/
   decodedAccessToken: (accessToken) => {
     const decodedAccessToken = jwt.verify(accessToken, process.env.SECRET_KEY);
     if (decodedAccessToken && decoded.el) {
