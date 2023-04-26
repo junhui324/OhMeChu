@@ -1,9 +1,6 @@
 // 비즈니스 로직을 수행하는 코드 -> controller로 전달
 
 import { Products } from '../db/model/index.js';
-//import fs from 'fs';
-//import { fromByteArray } from 'base-64';
-//import { Base64 } from 'js-base64';
 
 const descSort = -1;
 const ascSort = 1;
@@ -40,22 +37,6 @@ const productsService = {
 
   //관리자 - 상품 하나 추가 (이미지 추가해보기.. ㅠ)
   addProduct: async (productObj) => {
-    //이미지 파일 읽기
-    //const bitmap = fs.readFileSync('../../img/image1.png');
-    //const buffer = new Uint8Array(bitmap);
-    //const encodedString = Base64.fromUint8Array(buffer);
-    //console.log(encodedString);
-    /*
-    const addProduct = await Products.create({
-      name: productObj.name,
-      price: productObj.price,
-      img: encodedString,
-      category: productObj.category,
-      description: productObj.description,
-      sub_description: productObj.sub_description,
-      recommended: productObj.recommended,
-    });
-    */
     const addProduct = await Products.create(productObj);
     return addProduct;
   },
