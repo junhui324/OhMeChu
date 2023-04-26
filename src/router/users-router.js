@@ -28,7 +28,4 @@ usersRouter.get(
 //사용자 정보 삭제 (탈퇴)
 usersRouter.delete('/myPage', usersController.deleteProfile);
 
-//주문 정보 저장
-usersRouter.put('/:id', usersController.addOrderNumber);
-
 export { usersRouter };

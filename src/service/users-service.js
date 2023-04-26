@@ -1,4 +1,5 @@
 import { Users } from '../db/model/index.js';
+import { Orders } from '../db/model/index.js';
 import bcrypt from 'bcrypt';
 
 //  /api/myPage에 접근 할 때, 로그인 된 유저인지 확인하기
@@ -75,15 +76,6 @@ const usersService = {
       console.log('비밀번호가 다릅니다.');
       return;
     }
-  },
-
-  //주문 번호 저장
-  addOrderNumber: async (email, orderNumber) => {
-    const user = await Users.updateOne(
-      { email: email },
-      { $push: { orderNumber: orderNumber } }
-    );
-    return user;
   },
 };
 

@@ -115,20 +115,6 @@ const usersController = {
       next(err);
     }
   },
-
-  //주문 정보 저장
-  addOrderNumber: async (req, res, next) => {
-    try {
-      const accessToken = req.headers.authorization.split('Bearer ')[1];
-      const email = authServices.decodedAccessToken(accessToken);
-      const { orderNumber } = req.body;
-      const user = await usersService.addOrderNumber(email, orderNumber);
-      res.json(user);
-    } catch (err) {
-      next(err);
-    }
-  },
-  //추가
 };
 
 export { usersController };

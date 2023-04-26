@@ -1,6 +1,7 @@
 // 비즈니스 로직을 수행하는 코드 -> controller로 전달
 
 import { Orders } from '../db/model/index.js';
+import { Users } from '../db/model/index.js';
 
 // 주문 상태 문자열 열거형
 const orderStates = {
@@ -19,6 +20,12 @@ const ordersService = {
       parseInt(purchaseAmount) + parseInt(deliveryFee)
     ).toLocaleString('ko-KR');
     const order = await Orders.create(orderObj);
+    if (orderObj.email) {
+      await Users.updateOne(
+        { email: orderObj.email },
+        { $push: { orderNumber: order._id } }
+      );
+    }
     return order;
   },
 
