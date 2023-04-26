@@ -37,10 +37,10 @@ const usersController = {
   //회원 정보 변경 -> 휴대폰 번호, 주소
   changeProfile: async (req, res, next) => {
     try {
-      const { id } = req.params;
+      const { email } = req.params; //jwt 토큰에서 이메일 정보 추출해야함
       const { password, changeField, changeData } = req.body;
       const user = await usersService.changeProfile(
-        id,
+        email,
         password,
         changeField,
         changeData
@@ -51,6 +51,7 @@ const usersController = {
     }
   },
 
+  //로그인
   usersLogin: async (req, res, next) => {
     try {
       const { email, password } = req.body;
@@ -75,6 +76,7 @@ const usersController = {
     }
   },
 
+  //로그아웃
   usersLogout: async (req, res, next) => {
     try {
       res.clearCookie('refreshToken');
@@ -87,9 +89,9 @@ const usersController = {
   //사용자 정보 조회
   getProfile: async (req, res, next) => {
     try {
-      const { id } = req.params;
+      const { email } = req.params; //jwt 토큰에서 이메일 정보 추출해야함
       const { password } = req.body;
-      const user = await usersService.getProfile(id, password);
+      const user = await usersService.getProfile(email, password);
       res.json(user);
     } catch (err) {
       next(err);
@@ -99,9 +101,9 @@ const usersController = {
   //사용자 정보 삭제 (탈퇴)
   deleteProfile: async (req, res, next) => {
     try {
-      const { id } = req.params;
+      const { email } = req.params; //jwt 토큰에서 이메일 정보 추출해야함
       const { password } = req.body;
-      const user = await usersService.deleteProfile(id, password);
+      const user = await usersService.deleteProfile(email, password);
       res.json(user);
     } catch (err) {
       next(err);
@@ -111,9 +113,9 @@ const usersController = {
   //주문 정보 저장
   addOrderNumber: async (req, res, next) => {
     try {
-      const { id } = req.params;
+      const { email } = req.params; //jwt 토큰에서 이메일 정보 추출해야함
       const { orderNumber } = req.body;
-      const user = await usersService.addOrderNumber(id, orderNumber);
+      const user = await usersService.addOrderNumber(email, orderNumber);
       res.json(user);
     } catch (err) {
       next(err);
