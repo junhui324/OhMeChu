@@ -93,7 +93,8 @@ const usersController = {
   //사용자 정보 조회
   getProfile: async (req, res, next) => {
     try {
-      const accessToken = req.cookies.accessToken;
+      //const accessToken = req.cookies.accessToken;
+      const accessToken = req.headers.authorization.split('Bearer ')[1];
       const email = authServices.decodedAccessToken(accessToken);
       const { password } = req.body;
       const user = await usersService.getProfile(email, password);
