@@ -31,7 +31,7 @@ app.use(urlencoded({ extended: true }));
 app.use(
   cors({
     origin: '*', // 허용할 도메인을 지정합니다. '*'는 모든 도메인을 허용합니다.
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // 허용할 HTTP 메소드를 지정합니다.
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // 허용할 HTTP 메소드를 지정합니다.
     allowedHeaders: ['Content-Type', 'Authorization'], // 허용할 HTTP 헤더를 지정합니다.
     credentials: true, // 인증정보(Cookie, Authorization header 등)를 포함해서 요청을 허용합니다.
     maxAge: 86400,

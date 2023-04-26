@@ -36,23 +36,6 @@ const usersController = {
     }
   },
 
-  //회원 정보 변경 -> 휴대폰 번호, 주소
-  changeProfile: async (req, res, next) => {
-    try {
-      const { email } = req.params; //jwt 토큰에서 이메일 정보 추출해야함
-      const { password, changeField, changeData } = req.body;
-      const user = await usersService.changeProfile(
-        email,
-        password,
-        changeField,
-        changeData
-      );
-      res.json(user);
-    } catch (err) {
-      next(err);
-    }
-  },
-
   //로그인
   usersLogin: async (req, res, next) => {
     try {
@@ -88,6 +71,25 @@ const usersController = {
     }
   },
 
+  //회원 정보 변경 -> 휴대폰 번호, 주소
+  changeProfile: async (req, res, next) => {
+    try {
+      //jwt 토큰에서 이메일 정보 추출
+      const accessToken = req.cookies.accessToken;
+      const email = authServices.decodedAccessToken(accessToken);
+      const { password, changeField, changeData } = req.body;
+      const user = await usersService.changeProfile(
+        email,
+        password,
+        changeField,
+        changeData
+      );
+      res.json(user);
+    } catch (err) {
+      next(err);
+    }
+  },
+
   //사용자 정보 조회
   getProfile: async (req, res, next) => {
     try {
@@ -103,7 +105,8 @@ const usersController = {
   //사용자 정보 삭제 (탈퇴)
   deleteProfile: async (req, res, next) => {
     try {
-      const { email } = req.params; //jwt 토큰에서 이메일 정보 추출해야함
+      const accessToken = req.cookies.accessToken;
+      const email = authServices.decodedAccessToken(accessToken);
       const { password } = req.body;
       const user = await usersService.deleteProfile(email, password);
       res.json(user);
@@ -115,7 +118,8 @@ const usersController = {
   //주문 정보 저장
   addOrderNumber: async (req, res, next) => {
     try {
-      const { email } = req.params; //jwt 토큰에서 이메일 정보 추출해야함
+      const accessToken = req.cookies.accessToken;
+      const email = authServices.decodedAccessToken(accessToken);
       const { orderNumber } = req.body;
       const user = await usersService.addOrderNumber(email, orderNumber);
       res.json(user);

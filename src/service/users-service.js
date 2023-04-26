@@ -29,8 +29,17 @@ const usersService = {
     }
   },
 
-  //로그인 되어있다는 전제 하에.. email 비교하고
-  //회원 정보 변경 -> ex) { "changeField": "phone_number", "changeData": "01012345678" }
+  //회원인지 확인하는 함수
+  isMember: async (email, password) => {
+    const memberInfo = await Users.findOne({ email });
+    if (!memberInfo) {
+      return;
+    }
+    const isPasswordTrue = await bcrypt.compare(password, memberInfo.password);
+    return { memberInfo, isPasswordTrue };
+  },
+
+  //회원 정보 변경
   changeProfile: async (email, password, changeField, changeData) => {
     const user = await Users.findOne({ email: email }); //id로 회원의 정보 찾기
     const isPassword = await bcrypt.compare(password, user.password);
@@ -47,15 +56,6 @@ const usersService = {
       console.log('비밀번호가 다릅니다.');
       return;
     }
-  },
-
-  isMember: async (email, password) => {
-    const memberInfo = await Users.findOne({ email });
-    if (!memberInfo) {
-      return;
-    }
-    const isPasswordTrue = await bcrypt.compare(password, memberInfo.password);
-    return { memberInfo, isPasswordTrue };
   },
 
   //사용자 정보 조회

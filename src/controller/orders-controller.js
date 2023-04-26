@@ -31,7 +31,7 @@ const ordersController = {
         orderState: orderState,
       };
       const order = await ordersService.addOrder(orderObj);
-      res.json(order);
+      res.json(order._id);
     } catch (err) {
       next(err);
     }
