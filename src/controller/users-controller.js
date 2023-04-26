@@ -63,28 +63,26 @@ const usersController = {
       if (!memberInfo || !isPasswordTrue) {
         throw new Error('이메일 또는 비밀번호가 틀렸습니다.');
       }
-      const token = authServices.issueJWT(memberInfo); //사용자 정보를 담은 객체:memberInfo
-      res.cookie('token', token, {
+      const refreshToken = authServices.issueRefreshJWT(memberInfo); //사용자 정보를 담은 객체:memberInfo
+      const accessToken = authServices.issueAccessJWT(memberInfo);
+      res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         secure: true, // HTTPS 연결에서만 쿠키 전송
         sameSite: 'none', // Cross-site 요청에서도 쿠키 전송
       });
-
-      res.redirect('/api');
+      res.status(200).json({ accessToken });
     } catch (err) {
-      next(err);
-      return;
+      return next(err);
     }
   },
 
   //로그아웃
   usersLogout: async (req, res, next) => {
     try {
-      res.clearCookie('token');
-      res.redirect('/api/users/login');
+      res.clearCookie('refreshToken');
+      res.redirect('/api/users/login'); //추후 수정
     } catch (err) {
-      next(err);
-      return;
+      return next(err);
     }
   },
 
