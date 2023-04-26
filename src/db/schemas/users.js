@@ -29,7 +29,7 @@ const usersSchema = new Schema(
       required: true,
     },
     userPoint: {
-      type: Number,
+      type: String,
       required: true,
       default: 0,
     },

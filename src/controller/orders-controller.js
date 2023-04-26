@@ -8,6 +8,7 @@ const ordersController = {
     try {
       const {
         orderDetail,
+        email,
         userName,
         phoneNumber,
         address,
@@ -19,6 +20,7 @@ const ordersController = {
       } = req.body;
       const orderObj = {
         orderDetail: orderDetail,
+        email: email,
         userName: userName,
         phoneNumber: phoneNumber,
         address: address,

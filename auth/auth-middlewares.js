@@ -28,7 +28,6 @@ const authMiddlewares = {
   },
 
   //로그인 유저 전용 페이지에 접근할 경우, 필요한 토큰 인증
-  /*
   isVarifiedToken: (req, res, next) => {
     const token = req.cookies.token;
     const secret = process.env.SECRET_KEY;
@@ -43,7 +42,6 @@ const authMiddlewares = {
       return res.status(401).json({ message: '잘못된 토큰입니다.' });
     }
   },
-  */
 };
 
 export { authMiddlewares };

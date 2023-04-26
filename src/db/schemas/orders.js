@@ -9,6 +9,10 @@ const ordersSchema = new Schema(
       type: Array,
       required: true,
     },
+    email: {
+      type: String,
+      default: null,
+    },
     userName: {
       type: String,
       required: true,
@@ -26,23 +30,23 @@ const ordersSchema = new Schema(
       required: true,
     },
     purchaseAmount: {
-      type: Number,
+      type: String,
       required: true,
     },
     deliveryFee: {
-      type: Number,
+      type: String,
       required: true,
     },
     totalAmount: {
-      type: Number,
+      type: String,
       required: true,
       default: 0,
     },
     orderState: {
-      //"상품 준비 중" 일 때만 "배송지 수정 / 주문 취소" 가능
+      //"배송준비중" 일 때만 "배송지 수정 / 주문 취소" 가능
       type: String,
       required: true,
-      default: '상품 준비 중',
+      default: '배송준비중',
     },
   },
   { timestamps: true },

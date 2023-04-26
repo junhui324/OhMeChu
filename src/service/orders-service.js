@@ -4,17 +4,20 @@ import { Orders } from '../db/model/index.js';
 
 // 주문 상태 문자열 열거형
 const orderStates = {
-  productReady: '상품 준비 중',
-  deliveryReady: '배송 준비 중',
-  courierDelivery: '배송 중',
-  deliveryCompleted: '배송 완료',
+  //productReady: '상품 준비 중',
+  deliveryReady: '배송준비중',
+  courierDelivery: '배송중',
+  deliveryCompleted: '배송완료',
 };
 
 const ordersService = {
   //주문 정보 저장 (구현)
   addOrder: async (orderObj) => {
-    orderObj.totalAmount =
-      parseInt(orderObj.purchaseAmount) + parseInt(orderObj.deliveryFee);
+    const purchaseAmount = orderObj.purchaseAmount.replace(',', '');
+    const deliveryFee = orderObj.deliveryFee.replace(',', '');
+    orderObj.totalAmount = (
+      parseInt(purchaseAmount) + parseInt(deliveryFee)
+    ).toLocaleString('ko-KR');
     const order = await Orders.create(orderObj);
     return order;
   },
@@ -39,10 +42,10 @@ const ordersService = {
     return order;
   },
 
-  //주문 id 활용해서 주문 정보 업데이트 -> 배송지 변경 (orderState가 "상품 준비 중" 일 때)
+  //주문 id 활용해서 주문 정보 업데이트 -> 배송지 변경 (orderState가 "배송준비중" 일 때)
   updateOrder: async (id, changeAddress) => {
     const order = await Orders.findById(id).exec();
-    if (order.orderState === orderStates.productReady) {
+    if (order.orderState === orderStates.deliveryReady) {
       const updatedResult = await Orders.updateOne(
         { _id: order._id },
         { address: changeAddress }
@@ -54,10 +57,10 @@ const ordersService = {
     }
   },
 
-  //주문 id 활용해서 주문 취소(삭제) 하기 -> 주문 취소 (orderState가 "상품 준비 중" 일 때)
+  //주문 id 활용해서 주문 취소(삭제) 하기 -> 주문 취소 (orderState가 "배송준비중" 일 때)
   deleteOrder: async (id) => {
     const order = await Orders.findById(id).exec();
-    if (order.orderState === orderStates.productReady) {
+    if (order.orderState === orderStates.deliveryReady) {
       const deletedResult = await Orders.deleteOne({ _id: order._id });
       return deletedResult;
     } else {
