@@ -59,24 +59,17 @@ const usersService = {
   },
 
   //사용자 정보 조회
-  getProfile: async (email, password) => {
+  getProfile: async (email) => {
     const user = await Users.findOne({ email: email });
-    const isPassword = await bcrypt.compare(password, user.password);
-    if (isPassword) {
-      const getUserData = await Users.findById({ email: email });
-      return getUserData;
-    } else {
-      console.log('비밀번호가 다릅니다.');
-      return;
-    }
+    return user;
   },
 
   //사용자 정보 삭제 (탈퇴)
   deleteProfile: async (email, password) => {
-    const user = await Users.findById(email);
+    const user = await Users.findOne({ email: email });
     const isPassword = await bcrypt.compare(password, user.password);
     if (isPassword) {
-      const getUserData = await Users.findByIdAndDelete({ email: email });
+      const getUserData = await Users.deleteOne({ email: email });
       return getUserData;
     } else {
       console.log('비밀번호가 다릅니다.');

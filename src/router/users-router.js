@@ -16,17 +16,17 @@ usersRouter.post('/login', usersController.usersLogin);
 usersRouter.get('/logout', usersController.usersLogout);
 
 //회원 정보 변경 -> 휴대폰 번호, 주소
-usersRouter.put('/myPage/:id', usersController.changeProfile);
+usersRouter.put('/myPage', usersController.changeProfile);
 
 //사용자 정보 조회
 usersRouter.get(
-  '/myPage/:id',
-  authMiddlewares.isVarifiedAccessToken,
+  '/myPage',
+  //authMiddlewares.isVarifiedAccessToken,
   usersController.getProfile
 );
 
 //사용자 정보 삭제 (탈퇴)
-usersRouter.delete('/myPage/:id', usersController.deleteProfile);
+usersRouter.delete('/myPage', usersController.deleteProfile);
 
 //주문 정보 저장
 usersRouter.put('/:id', usersController.addOrderNumber);

@@ -42,13 +42,18 @@ const ordersService = {
     return order;
   },
 
-  //주문 id 활용해서 주문 정보 업데이트 -> 배송지 변경 (orderState가 "배송준비중" 일 때)
-  updateOrder: async (id, changeAddress) => {
+  //주문 id 활용해서 주문 정보 업데이트
+  updateOrder: async (id, userName, phoneNumber, requirement, address) => {
     const order = await Orders.findById(id).exec();
     if (order.orderState === orderStates.deliveryReady) {
-      const updatedResult = await Orders.updateOne(
+      const updatedResult = await Orders.updateMany(
         { _id: order._id },
-        { address: changeAddress }
+        {
+          userName: userName,
+          phoneNumber: phoneNumber,
+          requirement: requirement,
+          address: address,
+        }
       );
       return updatedResult;
     } else {
@@ -71,22 +76,3 @@ const ordersService = {
 };
 
 export { ordersService };
-
-//몽고디비에서 ObjectId 가져오는 법
-//userId = ObjectId('643e5d487671a822af54ff0f');
-//userId = userId.toString();
-/*
-  //주문 id 활용해서 주문 정보 업데이트 -> 배송지 변경 (orderState가 "상품 준비 중" 일 때)
-  updateOrder: async (id, currentAddress, changeAddress) => {
-    const order = await Orders.findById(id).exec();
-    if (order.orderState === orderStates.productReady) {
-      const updatedResult = await Orders.updateOne(
-        { _id: order._id, address: currentAddress },
-        { $set: { 'address.$': changeAddress } }
-      );
-      return updatedResult;
-    } else {
-      console.log(`현재 ${order.orderState} 이므로 수정할 수 없습니다.`);
-      return;
-    }
-    */

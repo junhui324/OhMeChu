@@ -30,8 +30,8 @@ const authServices = {
 */
   decodedAccessToken: (accessToken) => {
     const decodedAccessToken = jwt.verify(accessToken, process.env.SECRET_KEY);
-    if (decodedAccessToken && decoded.el) {
-      return decoded.el;
+    if (decodedAccessToken && decodedAccessToken.el) {
+      return decodedAccessToken.el;
     }
     return;
   },
