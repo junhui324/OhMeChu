@@ -1,6 +1,9 @@
 // 비즈니스 로직을 수행하는 코드 -> controller로 전달
 
 import { Products } from '../db/model/index.js';
+//import fs from 'fs';
+//import { fromByteArray } from 'base-64';
+//import { Base64 } from 'js-base64';
 
 const descSort = -1;
 const ascSort = 1;
@@ -29,17 +32,31 @@ const categoryMap = new Map([
 ]);
 
 const productsService = {
-  //관리자 - 전체 상품 조회
+  //관리자 - 상품 여러개 추가
   addProductsList: async (arr) => {
     const addProductsList = await Products.create(arr);
     return addProductsList;
   },
 
-  //관리자 - 상품 하나 추가
+  //관리자 - 상품 하나 추가 (이미지 추가해보기.. ㅠ)
   addProduct: async (productObj) => {
+    //이미지 파일 읽기
+    //const bitmap = fs.readFileSync('../../img/image1.png');
+    //const buffer = new Uint8Array(bitmap);
+    //const encodedString = Base64.fromUint8Array(buffer);
+    //console.log(encodedString);
+    /*
     const addProduct = await Products.create({
-      productObj,
+      name: productObj.name,
+      price: productObj.price,
+      img: encodedString,
+      category: productObj.category,
+      description: productObj.description,
+      sub_description: productObj.sub_description,
+      recommended: productObj.recommended,
     });
+    */
+    const addProduct = await Products.create(productObj);
     return addProduct;
   },
 
@@ -85,14 +102,12 @@ const productsService = {
   },
 
   getRecommendedList: async () => {
-    const productsAll = await Products.find({ recommended: 1 }).limit(12);
+    const productsAll = await Products.find({}).sort({ recommended: -1 });
     return productsAll;
   },
 
   getNewProductsList: async () => {
-    const productsAll = await Products.find({})
-      .sort({ createdAt: -1 })
-      .limit(12);
+    const productsAll = await Products.find({}).sort({ createdAt: -1 });
     return productsAll;
   },
 };
