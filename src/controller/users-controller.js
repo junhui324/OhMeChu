@@ -75,7 +75,7 @@ const usersController = {
   changeProfile: async (req, res, next) => {
     try {
       //jwt 토큰에서 이메일 정보 추출
-      const accessToken = req.cookies.accessToken;
+      const accessToken = req.headers.authorization.split('Bearer ')[1];
       const email = authServices.decodedAccessToken(accessToken);
       const { password, changeField, changeData } = req.body;
       const user = await usersService.changeProfile(
@@ -93,7 +93,6 @@ const usersController = {
   //사용자 정보 조회
   getProfile: async (req, res, next) => {
     try {
-      //const accessToken = req.cookies.accessToken;
       const accessToken = req.headers.authorization.split('Bearer ')[1];
       const email = authServices.decodedAccessToken(accessToken);
       const { password } = req.body;
@@ -107,7 +106,7 @@ const usersController = {
   //사용자 정보 삭제 (탈퇴)
   deleteProfile: async (req, res, next) => {
     try {
-      const accessToken = req.cookies.accessToken;
+      const accessToken = req.headers.authorization.split('Bearer ')[1];
       const email = authServices.decodedAccessToken(accessToken);
       const { password } = req.body;
       const user = await usersService.deleteProfile(email, password);
@@ -120,7 +119,7 @@ const usersController = {
   //주문 정보 저장
   addOrderNumber: async (req, res, next) => {
     try {
-      const accessToken = req.cookies.accessToken;
+      const accessToken = req.headers.authorization.split('Bearer ')[1];
       const email = authServices.decodedAccessToken(accessToken);
       const { orderNumber } = req.body;
       const user = await usersService.addOrderNumber(email, orderNumber);
