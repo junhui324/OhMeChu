@@ -24,6 +24,10 @@ const usersSchema = new Schema(
       required: true,
       default: '기타',
     },
+    birth: {
+      type: String,
+      required: true,
+    },
     address: {
       type: Object,
       required: true,
