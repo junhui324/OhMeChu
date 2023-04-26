@@ -1,5 +1,7 @@
 import passport from 'passport';
 import authServices from './auth-service.js';
+import jwt from 'jsonwebtoken';
+require('dotenv').config();
 
 const statusCode = {
   unauthorized: 401,
@@ -30,17 +32,18 @@ const authMiddlewares = {
 
   //로그인 유저 전용 페이지에 접근할 경우, 필요한 토큰 인증
   isVarifiedAccessToken: (req, res, next) => {
-    const accessToken = req.cookies.accessToken;
+    const accessToken = req.headers.authorization.split('Bearer ')[1];
     const secret = process.env.SECRET_KEY;
     if (!accessToken) {
       return res.status(401).json({ message: '로그인이 필요합니다.' });
     }
     try {
       const decoded = jwt.verify(accessToken, secret);
-      req.user = decoded.user;
+      req.el = decoded.el;
       next();
     } catch (err) {
-      return res.status(401).json({ message: '유효하지 않은 토큰입니다.' });
+      console.log(err);
+      return res.status(401).json({ message: '유효하지 않은 토큰입니다.2' });
     }
   },
 

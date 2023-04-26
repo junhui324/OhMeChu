@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+require('dotenv').config();
 //import { RefreshToken } from './model/index.js';
 
 //JWT 생성

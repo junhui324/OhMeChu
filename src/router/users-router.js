@@ -13,19 +13,31 @@ usersRouter.post('/join', usersController.joinUser);
 usersRouter.post('/login', usersController.usersLogin);
 
 //로그아웃
-usersRouter.get('/logout', usersController.usersLogout);
+usersRouter.get(
+  '/logout',
+  authMiddlewares.isVarifiedAccessToken,
+  usersController.usersLogout
+);
 
 //회원 정보 변경 -> 휴대폰 번호, 주소
-usersRouter.put('/myPage', usersController.changeProfile);
+usersRouter.put(
+  '/myPage',
+  authMiddlewares.isVarifiedAccessToken,
+  usersController.changeProfile
+);
 
 //사용자 정보 조회
 usersRouter.get(
   '/myPage',
-  //authMiddlewares.isVarifiedAccessToken,
+  authMiddlewares.isVarifiedAccessToken,
   usersController.getProfile
 );
 
 //사용자 정보 삭제 (탈퇴)
-usersRouter.delete('/myPage', usersController.deleteProfile);
+usersRouter.delete(
+  '/myPage',
+  authMiddlewares.isVarifiedAccessToken,
+  usersController.deleteProfile
+);
 
 export { usersRouter };

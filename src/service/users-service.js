@@ -1,16 +1,5 @@
 import { Users } from '../db/model/index.js';
-import { Orders } from '../db/model/index.js';
 import bcrypt from 'bcrypt';
-
-//  /api/myPage에 접근 할 때, 로그인 된 유저인지 확인하기
-
-//  /api/myPage -> 바로 회원 정보 보이게.. (해당 유저의 users 스키마 get해서 보내주기) : 토큰(토큰에 있는 이메일)으로.. DB에 있는 유저 찾아야함
-//  /api/myPage -> '회원 정보 수정 버튼' 클릭 -> 비번 검사해서.. 회원 정보 변경 할 수 있게
-//  /api/myPage -> '회원 탈퇴 버튼' 클릭 -> 비번 검사해서.. DB에서 회원 정보 삭제
-
-//  /api/orders -> '주문 완료 버튼' 클릭 -> 토큰이 있으면 orders스키마에 email 추가해서 주문 생성, 없으면 그냥 주문 생성
-
-//  /api/myPage -> '주문 정보 조회 버튼' 클릭 -> 토큰에 있는 email과 orders DB의 주문들의 email을 비교해서 -> 같은 email인 order를 get해서 보내주기
 
 const usersService = {
   //회원 가입 -> 휴대폰 번호, 이메일이 DB에 없어야 회원가입 가능.
