@@ -3,6 +3,13 @@
 import { usersService } from '../service/users-service.js';
 import { authServices } from '../../auth/auth-service.js';
 
+const statusCode = {
+  success: 200,
+  unauthorized: 401,
+  forbidden: 403,
+  conflict: 409,
+};
+
 const usersController = {
   //회원 가입
   joinUser: async (req, res, next) => {
@@ -30,7 +37,11 @@ const usersController = {
         orderNumber: orderNumber,
       };
       const user = await usersService.joinUser(userObj);
-      res.json(user);
+      if (user == '이미 가입된 사용자입니다.') {
+        res.status(statusCode.conflict);
+      } else {
+        res.json(user);
+      }
     } catch (err) {
       next(err);
     }
@@ -42,11 +53,17 @@ const usersController = {
       const { email, password } = req.body;
       const member = await usersService.isMember(email, password);
       if (!member) {
-        throw new Error('이메일 또는 비밀번호가 틀렸습니다.');
+        //throw new Error('이메일 또는 비밀번호가 틀렸습니다.');
+        res
+          .status(statusCode.unauthorized)
+          .json('이메일 또는 비밀번호가 틀렸습니다.');
       }
       const { memberInfo, isPasswordTrue } = member;
       if (!memberInfo || !isPasswordTrue) {
-        throw new Error('이메일 또는 비밀번호가 틀렸습니다.');
+        //throw new Error('이메일 또는 비밀번호가 틀렸습니다.');
+        res
+          .status(statusCode.unauthorized)
+          .json('이메일 또는 비밀번호가 틀렸습니다.');
       }
       const refreshToken = authServices.issueRefreshJWT(memberInfo); //사용자 정보를 담은 객체:memberInfo
       const accessToken = authServices.issueAccessJWT(memberInfo);
@@ -55,7 +72,7 @@ const usersController = {
         secure: true, // HTTPS 연결에서만 쿠키 전송
         sameSite: 'none', // Cross-site 요청에서도 쿠키 전송
       });
-      res.status(200).json({ accessToken });
+      res.status(statusCode.success).json({ accessToken });
     } catch (err) {
       return next(err);
     }
@@ -85,7 +102,11 @@ const usersController = {
         changeField,
         changeData
       );
-      res.json(user);
+      if (user == '비밀번호가 다릅니다.') {
+        res.status(statusCode.conflict);
+      } else {
+        res.json(user);
+      }
     } catch (err) {
       next(err);
     }
@@ -109,7 +130,11 @@ const usersController = {
       const email = req.el;
       const { password } = req.body;
       const user = await usersService.deleteProfile(email, password);
-      res.json(user);
+      if (user == '비밀번호가 다릅니다.') {
+        res.status(statusCode.conflict);
+      } else {
+        res.json(user);
+      }
     } catch (err) {
       next(err);
     }

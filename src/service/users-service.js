@@ -14,8 +14,7 @@ const usersService = {
       const user = await Users.create(userObj);
       return user;
     } else {
-      console.log('이미 가입된 사용자입니다.');
-      return;
+      return '이미 가입된 사용자입니다.';
     }
   },
 
@@ -43,8 +42,7 @@ const usersService = {
       );
       return changeUserData;
     } else {
-      console.log('비밀번호가 다릅니다.');
-      return;
+      return '비밀번호가 다릅니다.';
     }
   },
 
@@ -62,8 +60,7 @@ const usersService = {
       const getUserData = await Users.deleteOne({ email: email });
       return getUserData;
     } else {
-      console.log('비밀번호가 다릅니다.');
-      return;
+      return '비밀번호가 다릅니다.';
     }
   },
 };
