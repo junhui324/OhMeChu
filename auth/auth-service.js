@@ -36,12 +36,15 @@ const authServices = {
     return restoreRefreshJWT._id;
   },
 
-  getRefreshToken: async (index) => {
-    const refreshTokenInDB = await RefreshToken.findOne({ index });
+  getRefreshToken: async (memberEmail) => {
+    const refreshTokenInDB = await RefreshToken.findOne({ memberEmail });
     return refreshTokenInDB;
   },
 
-  // getRefreshTokenindex: async ()
+  deleteRefreshToken: async (memberEmail) => {
+    const deleteTokenInDB = await RefreshToken.deleteOne({ memberEmail });
+    return deleteTokenInDB;
+  },
 };
 
 export { authServices };
