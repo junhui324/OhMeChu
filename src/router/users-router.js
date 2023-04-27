@@ -15,28 +15,28 @@ usersRouter.post('/login', usersController.usersLogin);
 //로그아웃
 usersRouter.get(
   '/logout',
-  authMiddlewares.isVarifiedAccessToken,
+  authMiddlewares.isVerifiedAccessToken,
   usersController.usersLogout
 );
 
 //회원 정보 변경 -> 휴대폰 번호, 주소
 usersRouter.put(
   '/myPage',
-  authMiddlewares.isVarifiedAccessToken,
+  authMiddlewares.isVerifiedAccessToken,
   usersController.changeProfile
 );
 
 //사용자 정보 조회
 usersRouter.get(
   '/myPage',
-  authMiddlewares.isVarifiedAccessToken,
+  authMiddlewares.isVerifiedAccessToken,
   usersController.getProfile
 );
 
 //사용자 정보 삭제 (탈퇴)
 usersRouter.delete(
   '/myPage',
-  authMiddlewares.isVarifiedAccessToken,
+  authMiddlewares.isVerifiedAccessToken,
   usersController.deleteProfile
 );
 

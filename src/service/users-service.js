@@ -29,6 +29,54 @@ const usersService = {
   },
 
   //회원 정보 변경
+  changeProfile: async (email, password, gender, phoneNumber, address) => {
+    const user = await Users.findOne({ email: email }); //id로 회원의 정보 찾기
+    const salt = await bcrypt.genSalt(12);
+    password = await bcrypt.hash(password, salt);
+    const changeUserData = await Users.updateOne(
+      { email: user.email },
+      {
+        password: password,
+        gender: gender,
+        phoneNumber: phoneNumber,
+        address: address,
+      }
+    );
+    return changeUserData;
+  },
+
+  //사용자 정보 조회
+  getProfile: async (email, buttonKey, password) => {
+    const user = await Users.findOne({ email: email });
+    if (buttonKey === 'modify') {
+      const isPassword = await bcrypt.compare(password, user.password);
+      if (isPassword) {
+        return '비밀번호가 맞습니다.';
+      } else {
+        return '비밀번호가 일치하지 않습니다.';
+      }
+    } else {
+      return user;
+    }
+  },
+
+  //사용자 정보 삭제 (탈퇴)
+  deleteProfile: async (email, password) => {
+    const user = await Users.findOne({ email: email });
+    const isPassword = await bcrypt.compare(password, user.password);
+    if (isPassword) {
+      const getUserData = await Users.deleteOne({ email: email });
+      return getUserData;
+    } else {
+      return '비밀번호가 일치하지 않습니다.';
+    }
+  },
+};
+
+export { usersService };
+
+/*
+  //회원 정보 변경
   changeProfile: async (email, password, changeField, changeData) => {
     const user = await Users.findOne({ email: email }); //id로 회원의 정보 찾기
     const isPassword = await bcrypt.compare(password, user.password);
@@ -45,24 +93,4 @@ const usersService = {
       return '비밀번호가 다릅니다.';
     }
   },
-
-  //사용자 정보 조회
-  getProfile: async (email) => {
-    const user = await Users.findOne({ email: email });
-    return user;
-  },
-
-  //사용자 정보 삭제 (탈퇴)
-  deleteProfile: async (email, password) => {
-    const user = await Users.findOne({ email: email });
-    const isPassword = await bcrypt.compare(password, user.password);
-    if (isPassword) {
-      const getUserData = await Users.deleteOne({ email: email });
-      return getUserData;
-    } else {
-      return '비밀번호가 다릅니다.';
-    }
-  },
-};
-
-export { usersService };
+*/

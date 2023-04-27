@@ -30,8 +30,10 @@ const authMiddlewares = {
     })(req, res, next);
   },
 
+  isVerifiedPassword: (req, res, next) => {},
+
   //로그인 유저 전용 페이지에 접근할 경우, 필요한 토큰 인증
-  isVarifiedAccessToken: (req, res, next) => {
+  isVerifiedAccessToken: (req, res, next) => {
     const accessToken = req.headers.authorization.split('Bearer ')[1];
     const secret = process.env.SECRET_KEY;
     if (!accessToken) {
@@ -52,7 +54,7 @@ const authMiddlewares = {
   },
 
   //refressToken 유효성 검사 API
-  isVarifiedRefreshToken: (req, res, next) => {
+  isVerifiedRefreshToken: (req, res, next) => {
     const refreshToken = req.cookies.refreshToken;
     const secret = process.env.SECRET_KEY;
     if (!refreshToken) {

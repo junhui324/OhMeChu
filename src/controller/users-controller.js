@@ -10,6 +10,8 @@ const statusCode = {
   conflict: 409,
 };
 
+const errorMessage = {};
+
 const usersController = {
   //회원 가입
   joinUser: async (req, res, next) => {
@@ -37,7 +39,7 @@ const usersController = {
         orderNumber: orderNumber,
       };
       const user = await usersService.joinUser(userObj);
-      if (user == '이미 가입된 사용자입니다.') {
+      if (user === '이미 가입된 사용자입니다.') {
         return res.status(statusCode.conflict).json(user);
       } else {
         res.json(user);
@@ -56,14 +58,14 @@ const usersController = {
         //throw new Error('이메일 또는 비밀번호가 틀렸습니다.');
         return res
           .status(statusCode.unauthorized)
-          .json('이메일 또는 비밀번호가 틀렸습니다.');
+          .json('이메일 또는 비밀번호가 일치하지 않습니다.');
       }
       const { memberInfo, isPasswordTrue } = member;
       if (!memberInfo || !isPasswordTrue) {
         //throw new Error('이메일 또는 비밀번호가 틀렸습니다.');
         return res
           .status(statusCode.unauthorized)
-          .json('이메일 또는 비밀번호가 틀렸습니다.');
+          .json('이메일 또는 비밀번호가 일치하지 않습니다.');
       }
       const refreshToken = authServices.issueRefreshJWT(memberInfo); //사용자 정보를 담은 객체:memberInfo
       const accessToken = authServices.issueAccessJWT(memberInfo);
@@ -91,22 +93,17 @@ const usersController = {
   //회원 정보 변경 -> 휴대폰 번호, 주소
   changeProfile: async (req, res, next) => {
     try {
-      //jwt 토큰에서 이메일 정보 추출
-      //const accessToken = req.headers.authorization.split('Bearer ')[1];
-      //const email = authServices.decodedAccessToken(accessToken);
       const email = req.el;
-      const { password, changeField, changeData } = req.body;
+      const { password, gender, phoneNumber, address } = req.body;
       const user = await usersService.changeProfile(
         email,
         password,
-        changeField,
-        changeData
+        gender,
+        phoneNumber,
+        address
       );
-      if (user == '비밀번호가 다릅니다.') {
-        return res.status(statusCode.conflict);
-      } else {
-        res.json(user);
-      }
+      res.json(user);
+      //}
     } catch (err) {
       next(err);
     }
@@ -116,8 +113,14 @@ const usersController = {
   getProfile: async (req, res, next) => {
     try {
       const email = req.el;
+      const buttonKey = req.query.btn;
       const { password } = req.body;
-      const user = await usersService.getProfile(email, password);
+      const user = await usersService.getProfile(email, buttonKey, password);
+      if (user === '비밀번호가 맞습니다.') {
+        return res.status(statusCode.success).json(user);
+      } else if (user === '비밀번호가 일치하지 않습니다.') {
+        return res.status(statusCode.unauthorized).json(user);
+      }
       res.json(user);
     } catch (err) {
       next(err);
@@ -130,8 +133,8 @@ const usersController = {
       const email = req.el;
       const { password } = req.body;
       const user = await usersService.deleteProfile(email, password);
-      if (user == '비밀번호가 다릅니다.') {
-        return res.status(statusCode.conflict);
+      if (user === '비밀번호가 일치하지 않습니다.') {
+        return res.status(statusCode.conflict).json(user);
       } else {
         res.json(user);
       }
