@@ -14,7 +14,7 @@ usersRouter.post('/join', usersController.joinUser);
 usersRouter.post('/login', usersController.usersLogin);
 
 //로그아웃
-usersRouter.get(
+usersRouter.post(
   '/logout',
   authMiddlewares.isVerifiedAccessToken,
   usersController.usersLogout
