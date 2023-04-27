@@ -110,7 +110,6 @@ const usersController = {
         address
       );
       res.json(user);
-      //}
     } catch (err) {
       next(err);
     }
