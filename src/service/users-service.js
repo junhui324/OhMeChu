@@ -1,5 +1,6 @@
 import { Users } from '../db/model/index.js';
 import bcrypt from 'bcrypt';
+import { errorMessage } from '../misc/error-message.js';
 
 const usersService = {
   //회원 가입 -> 휴대폰 번호, 이메일이 DB에 없어야 회원가입 가능.
@@ -14,7 +15,7 @@ const usersService = {
       const user = await Users.create(userObj);
       return user;
     } else {
-      return '이미 가입된 사용자입니다.';
+      return errorMessage.conflictError;
     }
   },
 
@@ -53,7 +54,7 @@ const usersService = {
       if (isPassword) {
         return '비밀번호가 맞습니다.';
       } else {
-        return '비밀번호가 일치하지 않습니다.';
+        return errorMessage.authorizationError[4];
       }
     } else {
       return user;
@@ -61,15 +62,9 @@ const usersService = {
   },
 
   //사용자 정보 삭제 (탈퇴)
-  deleteProfile: async (email, password) => {
-    const user = await Users.findOne({ email: email });
-    const isPassword = await bcrypt.compare(password, user.password);
-    if (isPassword) {
-      const getUserData = await Users.deleteOne({ email: email });
-      return getUserData;
-    } else {
-      return '비밀번호가 일치하지 않습니다.';
-    }
+  deleteProfile: async (email) => {
+    const user = await Users.deleteOne({ email: email });
+    return user;
   },
 };
 

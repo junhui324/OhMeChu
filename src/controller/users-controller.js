@@ -2,6 +2,7 @@
 // service에서 res를 받아 Front에 최종 응답
 import { usersService } from '../service/users-service.js';
 import { authServices } from '../../auth/auth-service.js';
+import { errorMessage } from '../misc/error-message.js';
 
 const statusCode = {
   success: 200,
@@ -37,7 +38,7 @@ const usersController = {
         orderNumber: orderNumber,
       };
       const user = await usersService.joinUser(userObj);
-      if (user === '이미 가입된 사용자입니다.') {
+      if (user === errorMessage.conflictError) {
         return res.status(statusCode.conflict).json(user);
       } else {
         res.json(user);
@@ -53,17 +54,15 @@ const usersController = {
       const { email, password } = req.body;
       const member = await usersService.isMember(email, password);
       if (!member) {
-        //throw new Error('이메일 또는 비밀번호가 틀렸습니다.');
         return res
           .status(statusCode.unauthorized)
-          .json('이메일 또는 비밀번호가 일치하지 않습니다.');
+          .json(errorMessage.authorizationError[3]);
       }
       const { memberInfo, isPasswordTrue } = member;
       if (!memberInfo || !isPasswordTrue) {
-        //throw new Error('이메일 또는 비밀번호가 틀렸습니다.');
         return res
           .status(statusCode.unauthorized)
-          .json('이메일 또는 비밀번호가 일치하지 않습니다.');
+          .json(errorMessage.authorizationError[3]);
       }
       const refreshToken = authServices.issueRefreshJWT(memberInfo); //사용자 정보를 담은 객체:memberInfo
       const accessToken = authServices.issueAccessJWT(memberInfo);
@@ -116,7 +115,7 @@ const usersController = {
       const user = await usersService.getProfile(email, buttonKey, password);
       if (user === '비밀번호가 맞습니다.') {
         return res.status(statusCode.success).json(user);
-      } else if (user === '비밀번호가 일치하지 않습니다.') {
+      } else if (user === errorMessage.authorizationError[4]) {
         return res.status(statusCode.unauthorized).json(user);
       }
       res.json(user);
@@ -129,9 +128,8 @@ const usersController = {
   deleteProfile: async (req, res, next) => {
     try {
       const email = req.el;
-      const { password } = req.body;
-      const user = await usersService.deleteProfile(email, password);
-      if (user === '비밀번호가 일치하지 않습니다.') {
+      const user = await usersService.deleteProfile(email);
+      if (user === errorMessage.authorizationError[4]) {
         return res.status(statusCode.unauthorized).json(user);
       } else {
         res.json(user);

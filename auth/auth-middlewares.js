@@ -1,7 +1,7 @@
 import passport from 'passport';
 import authServices from './auth-service.js';
 import jwt from 'jsonwebtoken';
-import { commonErrors } from '../src/misc/error-message.js';
+import { errorMessage } from '../src/misc/error-message.js';
 require('dotenv').config();
 
 const statusCode = {
@@ -19,7 +19,7 @@ const authMiddlewares = {
       if (!user) {
         return res
           .status(statusCode.unauthorized)
-          .json({ message: '로그인 인증 실패' });
+          .json({ message: errorMessage.authorizationError[0] });
       }
       const accessToken = authServices.issueAccessJWT(user);
       res.cookie('accessToken', accessToken);
@@ -40,7 +40,7 @@ const authMiddlewares = {
     if (!accessToken) {
       return res
         .status(statusCode.unauthorized)
-        .json({ message: '로그인이 필요합니다.' });
+        .json({ message: errorMessage.authorizationError[1] });
     }
     try {
       const decoded = jwt.verify(accessToken, secret);
@@ -50,7 +50,7 @@ const authMiddlewares = {
       console.log(err);
       return res
         .status(statusCode.unauthorized)
-        .json({ message: '유효하지 않은 토큰입니다.' });
+        .json({ message: errorMessage.authorizationError[2] });
     }
   },
 
@@ -61,7 +61,7 @@ const authMiddlewares = {
     if (!refreshToken) {
       return res
         .status(statusCode.unauthorized)
-        .json({ message: '로그인이 필요합니다.' });
+        .json({ message: errorMessage.authorizationError[1] });
     }
     try {
       const decoded = jwt.verify(refreshToken, secret);
@@ -70,7 +70,7 @@ const authMiddlewares = {
     } catch (err) {
       return res
         .status(statusCode.unauthorized)
-        .json({ message: '유효하지 않은 토큰입니다.' });
+        .json({ message: errorMessage.authorizationError[2] });
     }
   },
 
@@ -80,13 +80,13 @@ const authMiddlewares = {
     if (refreshToken == null) {
       return res
         .status(statusCode.unauthorized)
-        .json({ message: '유효하지 않은 토큰입니다.' });
+        .json({ message: errorMessage.authorizationError[2] });
     }
     jwt.verify(refreshToken, process.env.SECRET_KEY, (err, user) => {
       if (err)
         return res
           .status(statusCode.forbidden)
-          .json({ message: '인증되지 않은 토큰입니다.' });
+          .json({ message: errorMessage.forbiddenError });
       const accessToken = issueAccessJWT(user);
       res.json({ accessToken });
       next();
