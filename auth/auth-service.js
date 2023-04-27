@@ -11,6 +11,7 @@ const authServices = {
     const accessToken = jwt.sign(payload, secret, { expiresIn });
     return accessToken;
   },
+
   issueRefreshJWT: (user) => {
     const payload = { el: user.email };
     const secret = process.env.SECRET_KEY;

@@ -43,7 +43,6 @@ app.use('/api/products', productsRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/category', categoryRouter);
-// app.use('/api', authRouter);
 
 //오류처리 미들웨어
 app.use(errorMiddlewares);
