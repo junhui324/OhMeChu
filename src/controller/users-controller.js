@@ -56,13 +56,13 @@ const usersController = {
       if (!member) {
         return res
           .status(statusCode.unauthorized)
-          .json(errorMessage.authorizationError[3]);
+          .json(errorMessage.authorizationError[2]);
       }
       const { memberInfo, isPasswordTrue } = member;
       if (!memberInfo || !isPasswordTrue) {
         return res
           .status(statusCode.unauthorized)
-          .json(errorMessage.authorizationError[3]);
+          .json(errorMessage.authorizationError[2]);
       }
       const refreshToken = authServices.issueRefreshJWT(memberInfo); //사용자 정보를 담은 객체:memberInfo
       const expiresIn = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000);
@@ -90,7 +90,9 @@ const usersController = {
       return next();
     } catch (err) {
       if (err instanceof AuthenticationError) {
-        res.status(401).json('유효하지 않은 인증 정보입니다.');
+        res
+          .status(statusCode.unauthorized)
+          .json(errorMessage.authorizationError[0]);
       }
       return next(err);
     }
@@ -109,7 +111,6 @@ const usersController = {
         address
       );
       res.json(user);
-      //}
     } catch (err) {
       next(err);
     }
@@ -124,7 +125,7 @@ const usersController = {
       const user = await usersService.getProfile(email, buttonKey, password);
       if (user === '비밀번호가 맞습니다.') {
         return res.status(statusCode.success).json(user);
-      } else if (user === errorMessage.authorizationError[4]) {
+      } else if (user === errorMessage.authorizationError[3]) {
         return res.status(statusCode.unauthorized).json(user);
       }
       res.json(user);
@@ -138,11 +139,7 @@ const usersController = {
     try {
       const email = req.el;
       const user = await usersService.deleteProfile(email);
-      if (user === errorMessage.authorizationError[4]) {
-        return res.status(statusCode.unauthorized).json(user);
-      } else {
-        res.json(user);
-      }
+      res.json(user);
     } catch (err) {
       next(err);
     }

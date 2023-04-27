@@ -1,6 +1,11 @@
-import authServices from './auth-service.js';
+import { authServices } from './auth-service.js';
 import jwt from 'jsonwebtoken';
+import { errorMessage } from '../src/misc/error-message.js';
 require('dotenv').config();
+
+const statusCode = {
+  unauthorized: 401,
+};
 
 const authMiddlewares = {
   //refreshToken 유효성 검사 API
@@ -10,7 +15,9 @@ const authMiddlewares = {
     const secret = process.env.SECRET_KEY;
     const currentTime = new Date().getTime();
     if (!restoredRefreshToken) {
-      return res.status(401).json({ message: '로그인이 필요합니다.' });
+      return res
+        .status(statusCode.unauthorized)
+        .json({ message: errorMessage.authorizationError[1] });
     }
     const { refreshToken, memberEmail, expiresIn } = restoredRefreshToken; //db에 저장된 토큰 정보
     try {
@@ -33,7 +40,9 @@ const authMiddlewares = {
       }
       return next();
     } catch (err) {
-      return res.status(401).json({ message: '로그인이 필요합니다.' });
+      return res
+        .status(statusCode.unauthorized)
+        .json({ message: errorMessage.authorizationError[1] });
     }
   },
 
@@ -42,7 +51,9 @@ const authMiddlewares = {
     const accessToken = req.headers.authorization.split('Bearer ')[1];
     const secret = process.env.SECRET_KEY;
     if (!accessToken) {
-      return res.status(401).json({ message: '로그인이 필요합니다.' });
+      return res
+        .status(statusCode.unauthorized)
+        .json({ message: errorMessage.authorizationError[1] });
     }
     try {
       const decodedAccessToken = jwt.verify(accessToken, secret);
@@ -52,7 +63,9 @@ const authMiddlewares = {
       if (err.name === 'TokenExpiredError') {
         return authMiddlewares.isVerifiedRefreshToken(req, res, next);
       }
-      return res.status(401).json({ message: '로그인이 필요합니다.' });
+      return res
+        .status(statusCode.unauthorized)
+        .json({ message: errorMessage.authorizationError[1] });
     }
   },
 
@@ -62,8 +75,8 @@ const authMiddlewares = {
       const memberEmail = req.email;
       if (!memberEmail) {
         return res
-          .status(401)
-          .json({ message: '유효하지 않은 인증정보 입니다.' });
+          .status(statusCode.unauthorized)
+          .json({ message: errorMessage.authorizationError[0] });
       }
       const accessToken = issueAccessJWT({ email: memberEmail });
       res.cookie('accessToken', accessToken, {
@@ -74,7 +87,9 @@ const authMiddlewares = {
       res.json(accessToken);
       return next();
     } catch (err) {
-      return res.status(401).json({ message: '로그인이 필요합니다.' });
+      return res
+        .status(statusCode.unauthorized)
+        .json({ message: errorMessage.authorizationError[1] });
     }
   },
 };
