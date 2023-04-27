@@ -37,11 +37,14 @@ const authServices = {
   },
 
   getRefreshToken: async (index) => {
-    const refreshTokenInDB = await RefreshToken.findOne({ index });
+    const refreshTokenInDB = await RefreshToken.findOne({ _id: index });
     return refreshTokenInDB;
   },
 
-  // getRefreshTokenindex: async ()
+  deleteRefreshToken: async (index) => {
+    const deleteTokenInDB = await RefreshToken.deleteOne({ _id: index });
+    return deleteTokenInDB;
+  },
 };
 
 export { authServices };

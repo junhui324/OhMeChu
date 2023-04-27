@@ -1,4 +1,4 @@
-import authServices from './auth-service.js';
+import { authServices } from './auth-service.js';
 import jwt from 'jsonwebtoken';
 import { errorMessage } from '../src/misc/error-message.js';
 require('dotenv').config();
@@ -10,8 +10,8 @@ const statusCode = {
 const authMiddlewares = {
   //refreshToken 유효성 검사 API
   isVerifiedRefreshToken: async (req, res, next) => {
-    const { index } = req.cookies.refreshTokenIndex;
-    const restoredRefreshToken = authServices.getRefreshToken(index);
+    const index = req.cookies.refreshTokenIndex;
+    const restoredRefreshToken = await authServices.getRefreshToken(index);
     const secret = process.env.SECRET_KEY;
     const currentTime = new Date().getTime();
     if (!restoredRefreshToken) {
@@ -26,10 +26,10 @@ const authMiddlewares = {
       if (expiresIn > currentTime) {
         req.email = memberEmail;
         return next();
-      } //여기까진 ㅇㅋ
+      }
       if (expiresIn <= currentTime) {
         const expiresIn = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000);
-        const newRefreshToken = await authServices.issueRefreshJWT({
+        const newRefreshToken = authServices.issueRefreshJWT({
           email: decoded.el,
         });
         const restoreRefreshToken = await authServices.restoreRefreshToken({
