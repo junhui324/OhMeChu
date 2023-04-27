@@ -3,6 +3,7 @@
 import { Router } from 'express';
 import { usersController } from '../controller/users-controller.js';
 import { authMiddlewares } from '../../auth/auth-middlewares.js';
+// import { usersMiddlewares } from '../middlewares/users-middlewares.js';
 
 const usersRouter = Router();
 

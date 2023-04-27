@@ -27,14 +27,21 @@ const authServices = {
     return;
   },
 
-  restoreRefreshJWT: async (refreshToken, memberEmail, expiresIn) => {
+  restoreRefreshToken: async (refreshToken, memberEmail, expiresIn) => {
     const restoreRefreshJWT = await RefreshToken.create({
       refreshToken,
       memberEmail,
       expiresIn,
     });
-    return restoreRefreshJWT;
+    return restoreRefreshJWT._id;
   },
+
+  getRefreshToken: async (index) => {
+    const refreshTokenInDB = await RefreshToken.findOne({ index });
+    return refreshTokenInDB;
+  },
+
+  // getRefreshTokenindex: async ()
 };
 
 export { authServices };

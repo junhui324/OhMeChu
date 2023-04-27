@@ -3,9 +3,6 @@ import { Schema } from 'mongoose';
 
 const productsSchema = new Schema(
   {
-    // id: {
-    //   type: Schema.Types.ObjectId,
-    // },
     name: {
       type: String,
       required: true,

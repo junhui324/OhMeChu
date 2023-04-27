@@ -18,7 +18,7 @@ const productsController = {
       const {
         name,
         price,
-        img_url,
+        img,
         category,
         description,
         sub_description,
@@ -28,7 +28,7 @@ const productsController = {
       const productObj = {
         name: name,
         price: price,
-        img_url: img_url,
+        img: img,
         category: category,
         description: description,
         sub_description: sub_description,

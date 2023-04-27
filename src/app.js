@@ -1,8 +1,6 @@
 import express, { json, urlencoded } from 'express';
 import cors from 'cors';
 import { mongoose } from 'mongoose';
-import passport from 'passport';
-import { usePassport } from './passport/index.js';
 import cookieParser from 'cookie-parser'; //JWT 토큰 사용시 필요한 cookieParser
 
 require('dotenv').config();
@@ -17,11 +15,7 @@ const app = express();
 
 mongoose.connect(process.env.MONGODB_URI);
 
-app.use(passport.initialize());
 app.use(cookieParser());
-
-//passport 전략 등록
-usePassport();
 
 //json parser
 app.use(json());
