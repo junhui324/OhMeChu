@@ -1,8 +1,12 @@
 import passport from 'passport';
 import authServices from './auth-service.js';
+import jwt from 'jsonwebtoken';
+import { errorMessage } from '../src/misc/error-message.js';
+require('dotenv').config();
 
 const statusCode = {
   unauthorized: 401,
+  forbidden: 403,
 };
 
 const authMiddlewares = {
@@ -15,9 +19,8 @@ const authMiddlewares = {
       if (!user) {
         return res
           .status(statusCode.unauthorized)
-          .json({ message: '로그인 인증 실패' });
+          .json({ message: errorMessage.authorizationError[0] });
       }
-      // const userInfo = req.user;
       const accessToken = authServices.issueAccessJWT(user);
       res.cookie('accessToken', accessToken);
       // return res.json({
@@ -28,35 +31,46 @@ const authMiddlewares = {
     })(req, res, next);
   },
 
+  isVerifiedPassword: (req, res, next) => {},
+
   //로그인 유저 전용 페이지에 접근할 경우, 필요한 토큰 인증
-  isVarifiedAccessToken: (req, res, next) => {
-    const accessToken = req.cookies.accessToken;
+  isVerifiedAccessToken: (req, res, next) => {
+    const accessToken = req.headers.authorization.split('Bearer ')[1];
     const secret = process.env.SECRET_KEY;
     if (!accessToken) {
-      return res.status(401).json({ message: '로그인이 필요합니다.' });
+      return res
+        .status(statusCode.unauthorized)
+        .json({ message: errorMessage.authorizationError[1] });
     }
     try {
       const decoded = jwt.verify(accessToken, secret);
-      req.user = decoded.user;
+      req.el = decoded.el;
       next();
     } catch (err) {
-      return res.status(401).json({ message: '유효하지 않은 토큰입니다.' });
+      console.log(err);
+      return res
+        .status(statusCode.unauthorized)
+        .json({ message: errorMessage.authorizationError[2] });
     }
   },
 
   //refressToken 유효성 검사 API
-  isVarifiedRefreshToken: (req, res, next) => {
+  isVerifiedRefreshToken: (req, res, next) => {
     const refreshToken = req.cookies.refreshToken;
     const secret = process.env.SECRET_KEY;
     if (!refreshToken) {
-      return res.status(401).json({ message: '로그인이 필요합니다.' });
+      return res
+        .status(statusCode.unauthorized)
+        .json({ message: errorMessage.authorizationError[1] });
     }
     try {
       const decoded = jwt.verify(refreshToken, secret);
       req.user = decoded.user;
       next();
     } catch (err) {
-      return res.status(401).json({ message: '유효하지 않은 토큰입니다.' });
+      return res
+        .status(statusCode.unauthorized)
+        .json({ message: errorMessage.authorizationError[2] });
     }
   },
 
@@ -64,11 +78,15 @@ const authMiddlewares = {
   issueNewAccessToken: (req, res, next) => {
     const refreshToken = req.cookies.refreshToken;
     if (refreshToken == null) {
-      return res.status(401).json({ message: '유효하지 않은 토큰입니다.' });
+      return res
+        .status(statusCode.unauthorized)
+        .json({ message: errorMessage.authorizationError[2] });
     }
     jwt.verify(refreshToken, process.env.SECRET_KEY, (err, user) => {
       if (err)
-        return res.status(403).json({ message: '인증되지 않은 토큰입니다.' });
+        return res
+          .status(statusCode.forbidden)
+          .json({ message: errorMessage.forbiddenError });
       const accessToken = issueAccessJWT(user);
       res.json({ accessToken });
       next();

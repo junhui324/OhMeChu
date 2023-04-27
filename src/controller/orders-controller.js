@@ -1,6 +1,7 @@
 // req 객체를 받아 service에 요청을 전달
 // service에서 res를 받아 Front에 최종 응답
 import { ordersService } from '../service/orders-service.js';
+import { authServices } from '../../auth/auth-service.js';
 
 const ordersController = {
   //주문 정보 저장
@@ -8,7 +9,6 @@ const ordersController = {
     try {
       const {
         orderDetail,
-        email,
         userName,
         phoneNumber,
         address,
@@ -18,6 +18,12 @@ const ordersController = {
         totalAmount,
         orderState,
       } = req.body;
+      let accessToken = req.headers.authorization;
+      let email = '';
+      if (accessToken) {
+        accessToken = accessToken.split('Bearer ')[1];
+        email = authServices.decodedAccessToken(accessToken);
+      }
       const orderObj = {
         orderDetail: orderDetail,
         email: email,
@@ -31,7 +37,7 @@ const ordersController = {
         orderState: orderState,
       };
       const order = await ordersService.addOrder(orderObj);
-      res.json(order);
+      res.json(order._id);
     } catch (err) {
       next(err);
     }
@@ -70,12 +76,18 @@ const ordersController = {
     }
   },
 
-  //주문 id 활용해서 주문 정보 업데이트 -> 배송지 변경 (order_state가 "상품 준비 중" 일 때)
+  //주문 id 활용해서 주문 정보 업데이트
   updateOrder: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const { changeAddress } = req.body;
-      const order = await ordersService.updateOrder(id, changeAddress);
+      const { userName, phoneNumber, requirement, address } = req.body;
+      const order = await ordersService.updateOrder(
+        id,
+        userName,
+        phoneNumber,
+        requirement,
+        address
+      );
       res.json(order);
     } catch (err) {
       next(err);

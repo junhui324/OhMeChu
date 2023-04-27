@@ -2,6 +2,14 @@
 // service에서 res를 받아 Front에 최종 응답
 import { usersService } from '../service/users-service.js';
 import { authServices } from '../../auth/auth-service.js';
+import { errorMessage } from '../misc/error-message.js';
+
+const statusCode = {
+  success: 200,
+  unauthorized: 401,
+  forbidden: 403,
+  conflict: 409,
+};
 
 const usersController = {
   //회원 가입
@@ -13,6 +21,7 @@ const usersController = {
         email,
         phoneNumber,
         gender,
+        birth,
         address,
         userPoint,
         orderNumber,
@@ -23,29 +32,17 @@ const usersController = {
         email: email,
         phoneNumber: phoneNumber,
         gender: gender,
+        birth: birth,
         address: address,
         userPoint: userPoint,
         orderNumber: orderNumber,
       };
       const user = await usersService.joinUser(userObj);
-      res.json(user);
-    } catch (err) {
-      next(err);
-    }
-  },
-
-  //회원 정보 변경 -> 휴대폰 번호, 주소
-  changeProfile: async (req, res, next) => {
-    try {
-      const { email } = req.params; //jwt 토큰에서 이메일 정보 추출해야함
-      const { password, changeField, changeData } = req.body;
-      const user = await usersService.changeProfile(
-        email,
-        password,
-        changeField,
-        changeData
-      );
-      res.json(user);
+      if (user === errorMessage.conflictError) {
+        return res.status(statusCode.conflict).json(user);
+      } else {
+        res.json(user);
+      }
     } catch (err) {
       next(err);
     }
@@ -57,11 +54,15 @@ const usersController = {
       const { email, password } = req.body;
       const member = await usersService.isMember(email, password);
       if (!member) {
-        throw new Error('이메일 또는 비밀번호가 틀렸습니다.');
+        return res
+          .status(statusCode.unauthorized)
+          .json(errorMessage.authorizationError[3]);
       }
       const { memberInfo, isPasswordTrue } = member;
       if (!memberInfo || !isPasswordTrue) {
-        throw new Error('이메일 또는 비밀번호가 틀렸습니다.');
+        return res
+          .status(statusCode.unauthorized)
+          .json(errorMessage.authorizationError[3]);
       }
       const refreshToken = authServices.issueRefreshJWT(memberInfo); //사용자 정보를 담은 객체:memberInfo
       const accessToken = authServices.issueAccessJWT(memberInfo);
@@ -70,7 +71,7 @@ const usersController = {
         secure: true, // HTTPS 연결에서만 쿠키 전송
         sameSite: 'none', // Cross-site 요청에서도 쿠키 전송
       });
-      res.status(200).json({ accessToken });
+      res.status(statusCode.success).json({ accessToken });
     } catch (err) {
       return next(err);
     }
@@ -86,12 +87,37 @@ const usersController = {
     }
   },
 
+  //회원 정보 변경 -> 휴대폰 번호, 주소
+  changeProfile: async (req, res, next) => {
+    try {
+      const email = req.el;
+      const { password, gender, phoneNumber, address } = req.body;
+      const user = await usersService.changeProfile(
+        email,
+        password,
+        gender,
+        phoneNumber,
+        address
+      );
+      res.json(user);
+      //}
+    } catch (err) {
+      next(err);
+    }
+  },
+
   //사용자 정보 조회
   getProfile: async (req, res, next) => {
     try {
-      const { email } = req.params; //jwt 토큰에서 이메일 정보 추출해야함
+      const email = req.el;
+      const buttonKey = req.query.btn;
       const { password } = req.body;
-      const user = await usersService.getProfile(email, password);
+      const user = await usersService.getProfile(email, buttonKey, password);
+      if (user === '비밀번호가 맞습니다.') {
+        return res.status(statusCode.success).json(user);
+      } else if (user === errorMessage.authorizationError[4]) {
+        return res.status(statusCode.unauthorized).json(user);
+      }
       res.json(user);
     } catch (err) {
       next(err);
@@ -101,27 +127,17 @@ const usersController = {
   //사용자 정보 삭제 (탈퇴)
   deleteProfile: async (req, res, next) => {
     try {
-      const { email } = req.params; //jwt 토큰에서 이메일 정보 추출해야함
-      const { password } = req.body;
-      const user = await usersService.deleteProfile(email, password);
-      res.json(user);
+      const email = req.el;
+      const user = await usersService.deleteProfile(email);
+      if (user === errorMessage.authorizationError[4]) {
+        return res.status(statusCode.unauthorized).json(user);
+      } else {
+        res.json(user);
+      }
     } catch (err) {
       next(err);
     }
   },
-
-  //주문 정보 저장
-  addOrderNumber: async (req, res, next) => {
-    try {
-      const { email } = req.params; //jwt 토큰에서 이메일 정보 추출해야함
-      const { orderNumber } = req.body;
-      const user = await usersService.addOrderNumber(email, orderNumber);
-      res.json(user);
-    } catch (err) {
-      next(err);
-    }
-  },
-  //추가
 };
 
 export { usersController };
