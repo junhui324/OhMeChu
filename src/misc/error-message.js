@@ -1,9 +1,8 @@
 const errorMessage = {
   authenticationError: `Authentication Error`,
   authorizationError: [
-    `로그인 인증 실패`,
+    `유효하지 않은 인증정보입니다.`,
     `로그인이 필요합니다.`,
-    `유효하지 않은 토큰입니다.`,
     `이메일 또는 비밀번호가 일치하지 않습니다.`,
     `비밀번호가 일치하지 않습니다.`,
   ],
