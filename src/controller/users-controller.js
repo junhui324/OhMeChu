@@ -38,7 +38,7 @@ const usersController = {
       };
       const user = await usersService.joinUser(userObj);
       if (user == '이미 가입된 사용자입니다.') {
-        res.status(statusCode.conflict);
+        return res.status(statusCode.conflict).json(user);
       } else {
         res.json(user);
       }
@@ -54,14 +54,14 @@ const usersController = {
       const member = await usersService.isMember(email, password);
       if (!member) {
         //throw new Error('이메일 또는 비밀번호가 틀렸습니다.');
-        res
+        return res
           .status(statusCode.unauthorized)
           .json('이메일 또는 비밀번호가 틀렸습니다.');
       }
       const { memberInfo, isPasswordTrue } = member;
       if (!memberInfo || !isPasswordTrue) {
         //throw new Error('이메일 또는 비밀번호가 틀렸습니다.');
-        res
+        return res
           .status(statusCode.unauthorized)
           .json('이메일 또는 비밀번호가 틀렸습니다.');
       }
@@ -103,7 +103,7 @@ const usersController = {
         changeData
       );
       if (user == '비밀번호가 다릅니다.') {
-        res.status(statusCode.conflict);
+        return res.status(statusCode.conflict);
       } else {
         res.json(user);
       }
@@ -131,7 +131,7 @@ const usersController = {
       const { password } = req.body;
       const user = await usersService.deleteProfile(email, password);
       if (user == '비밀번호가 다릅니다.') {
-        res.status(statusCode.conflict);
+        return res.status(statusCode.conflict);
       } else {
         res.json(user);
       }
