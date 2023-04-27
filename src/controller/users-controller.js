@@ -87,7 +87,7 @@ const usersController = {
   usersLogout: async (req, res, next) => {
     try {
       res.clearCookie('accessToken');
-
+      return next();
       // res.redirect('/api/users/login'); //추후 수정
     } catch (err) {
       return next(err);
