@@ -10,8 +10,6 @@ const statusCode = {
   conflict: 409,
 };
 
-const errorMessage = {};
-
 const usersController = {
   //회원 가입
   joinUser: async (req, res, next) => {
@@ -134,7 +132,7 @@ const usersController = {
       const { password } = req.body;
       const user = await usersService.deleteProfile(email, password);
       if (user === '비밀번호가 일치하지 않습니다.') {
-        return res.status(statusCode.conflict).json(user);
+        return res.status(statusCode.unauthorized).json(user);
       } else {
         res.json(user);
       }

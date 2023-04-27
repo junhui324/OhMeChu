@@ -74,23 +74,3 @@ const usersService = {
 };
 
 export { usersService };
-
-/*
-  //회원 정보 변경
-  changeProfile: async (email, password, changeField, changeData) => {
-    const user = await Users.findOne({ email: email }); //id로 회원의 정보 찾기
-    const isPassword = await bcrypt.compare(password, user.password);
-    if (isPassword) {
-      //사용자가 입력한 password와 일치하는 password가 있으면
-      const changeUserData = await Users.updateOne(
-        { email: user.email },
-        {
-          [changeField]: changeData,
-        }
-      );
-      return changeUserData;
-    } else {
-      return '비밀번호가 다릅니다.';
-    }
-  },
-*/

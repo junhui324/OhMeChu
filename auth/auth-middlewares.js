@@ -1,6 +1,7 @@
 import passport from 'passport';
 import authServices from './auth-service.js';
 import jwt from 'jsonwebtoken';
+import { commonErrors } from '../src/misc/error-message.js';
 require('dotenv').config();
 
 const statusCode = {
