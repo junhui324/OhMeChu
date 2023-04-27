@@ -54,7 +54,7 @@ const usersService = {
       if (isPassword) {
         return '비밀번호가 맞습니다.';
       } else {
-        return errorMessage.authorizationError[4];
+        return errorMessage.authorizationError[3];
       }
     } else {
       return user;

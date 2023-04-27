@@ -56,28 +56,23 @@ const usersController = {
       if (!member) {
         return res
           .status(statusCode.unauthorized)
-          .json(errorMessage.authorizationError[3]);
+          .json(errorMessage.authorizationError[2]);
       }
       const { memberInfo, isPasswordTrue } = member;
       if (!memberInfo || !isPasswordTrue) {
         return res
           .status(statusCode.unauthorized)
-          .json(errorMessage.authorizationError[3]);
+          .json(errorMessage.authorizationError[2]);
       }
       const refreshToken = authServices.issueRefreshJWT(memberInfo); //사용자 정보를 담은 객체:memberInfo
       const expiresIn = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000);
       const memberEmail = memberInfo.email;
-      const refreshTokenIndex = await authServices.restoreRefreshToken(
+      await authServices.restoreRefreshToken(
         //db에 refresh token 저장
         refreshToken,
         memberEmail,
         expiresIn
       );
-      res.cookie('refreshTokenIndex', refreshTokenIndex, {
-        httpOnly: true,
-        secure: true, // HTTPS 연결에서만 쿠키 전송
-        sameSite: 'none', // Cross-site 요청에서도 쿠키 전송
-      });
       const accessToken = authServices.issueAccessJWT(memberInfo);
       res.json({ accessToken });
       return next();
@@ -89,14 +84,15 @@ const usersController = {
   //로그아웃
   usersLogout: async (req, res, next) => {
     try {
-      const index = req.cookies.refreshTokenIndex;
-      await authServices.deleteRefreshToken(index);
-      res.clearCookie('refreshTokenIndex');
+      const email = req.el;
+      await authServices.deleteRefreshToken(email);
       res.status(200).json('로그아웃이 정상적으로 완료되었습니다.');
       return next();
     } catch (err) {
       if (err instanceof AuthenticationError) {
-        res.status(401).json('유효하지 않은 인증 정보입니다.');
+        res
+          .status(statusCode.unauthorized)
+          .json(errorMessage.authorizationError[0]);
       }
       return next(err);
     }
@@ -129,7 +125,7 @@ const usersController = {
       const user = await usersService.getProfile(email, buttonKey, password);
       if (user === '비밀번호가 맞습니다.') {
         return res.status(statusCode.success).json(user);
-      } else if (user === errorMessage.authorizationError[4]) {
+      } else if (user === errorMessage.authorizationError[3]) {
         return res.status(statusCode.unauthorized).json(user);
       }
       res.json(user);
@@ -143,11 +139,7 @@ const usersController = {
     try {
       const email = req.el;
       const user = await usersService.deleteProfile(email);
-      if (user === errorMessage.authorizationError[4]) {
-        return res.status(statusCode.unauthorized).json(user);
-      } else {
-        res.json(user);
-      }
+      res.json(user);
     } catch (err) {
       next(err);
     }
