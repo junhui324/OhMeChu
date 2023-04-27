@@ -33,6 +33,12 @@ usersRouter.get(
   usersController.getProfile
 );
 
+usersRouter.post(
+  '/myPage',
+  authMiddlewares.isVerifiedAccessToken,
+  usersController.getProfile
+);
+
 //사용자 정보 삭제 (탈퇴)
 usersRouter.delete(
   '/myPage',
