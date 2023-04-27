@@ -31,7 +31,7 @@ const authMiddlewares = {
           expiresIn,
         });
         const refreshTokenIndex = restoreRefreshToken._id;
-        res.cookie('refreshToken', refreshTokenIndex, {
+        res.cookie('refreshTokenIndex', refreshTokenIndex, {
           httpOnly: true,
           secure: true,
           sameSite: 'none',

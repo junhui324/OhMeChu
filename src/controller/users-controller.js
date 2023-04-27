@@ -89,10 +89,15 @@ const usersController = {
   //로그아웃
   usersLogout: async (req, res, next) => {
     try {
-      res.clearCookie('accessToken');
+      const index = req.cookies.refreshTokenIndex;
+      await authServices.deleteRefreshToken(index);
+      res.clearCookie('refreshTokenIndex');
+      res.status(200).json('로그아웃이 정상적으로 완료되었습니다.');
       return next();
-      // res.redirect('/api/users/login'); //추후 수정
     } catch (err) {
+      if (err instanceof AuthenticationError) {
+        res.status(401).json('유효하지 않은 인증 정보입니다.');
+      }
       return next(err);
     }
   },
