@@ -17,10 +17,10 @@ ordersRouter.get('/:id', ordersController.getOrder);
 //주문 id 활용해서 해당 주문 내역 배송 상태 수정하기 (관리자 기능)
 ordersRouter.patch('/:id', ordersController.updateOrderState);
 
-//주문 id 활용해서 주문 정보 업데이트 -> 배송지 변경 (order_state가 "상품 준비 중" 일 때)
+//주문 id 활용해서 주문 정보 업데이트
 ordersRouter.put('/:id', ordersController.updateOrder);
 
-//주문 id 활용해서 주문 취소(삭제) 하기 -> 주문 취소 (order_state가 "상품 준비 중" 일 때)
+//주문 id 활용해서 주문 취소(삭제) 하기 -> 주문 취소
 ordersRouter.delete('/:id', ordersController.deleteOrder);
 
 export { ordersRouter };

@@ -22,7 +22,16 @@ app.use(json());
 app.use(urlencoded({ extended: true }));
 
 //cors
-app.use(cors());
+app.use(
+  cors({
+    origin: '*', // 허용할 도메인을 지정합니다. '*'는 모든 도메인을 허용합니다.
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'], // 허용할 HTTP 메소드를 지정합니다.
+    allowedHeaders: ['Content-Type', 'Authorization'], // 허용할 HTTP 헤더를 지정합니다.
+    credentials: true, // 인증정보(Cookie, Authorization header 등)를 포함해서 요청을 허용합니다.
+    maxAge: 86400,
+    optionsSuccessStatus: 200, // OPTIONS 요청에 대한 응답 상태 코드를 지정합니다.
+  })
+);
 
 //홈 화면
 app.get('/api', (req, res) => {

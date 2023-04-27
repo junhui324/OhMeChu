@@ -29,17 +29,15 @@ const categoryMap = new Map([
 ]);
 
 const productsService = {
-  //관리자 - 전체 상품 조회
+  //관리자 - 상품 여러개 추가
   addProductsList: async (arr) => {
     const addProductsList = await Products.create(arr);
     return addProductsList;
   },
 
-  //관리자 - 상품 하나 추가
+  //관리자 - 상품 하나 추가 (이미지 추가해보기.. ㅠ)
   addProduct: async (productObj) => {
-    const addProduct = await Products.create({
-      productObj,
-    });
+    const addProduct = await Products.create(productObj);
     return addProduct;
   },
 
