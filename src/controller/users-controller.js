@@ -67,17 +67,12 @@ const usersController = {
       const refreshToken = authServices.issueRefreshJWT(memberInfo); //사용자 정보를 담은 객체:memberInfo
       const expiresIn = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000);
       const memberEmail = memberInfo.email;
-      const refreshTokenIndex = await authServices.restoreRefreshToken(
+      await authServices.restoreRefreshToken(
         //db에 refresh token 저장
         refreshToken,
         memberEmail,
         expiresIn
       );
-      res.cookie('refreshTokenIndex', refreshTokenIndex, {
-        httpOnly: true,
-        secure: true, // HTTPS 연결에서만 쿠키 전송
-        sameSite: 'none', // Cross-site 요청에서도 쿠키 전송
-      });
       const accessToken = authServices.issueAccessJWT(memberInfo);
       res.json({ accessToken });
       return next();
@@ -89,9 +84,8 @@ const usersController = {
   //로그아웃
   usersLogout: async (req, res, next) => {
     try {
-      const index = req.cookies.refreshTokenIndex;
-      await authServices.deleteRefreshToken(index);
-      res.clearCookie('refreshTokenIndex');
+      const email = req.el;
+      await authServices.deleteRefreshToken(email);
       res.status(200).json('로그아웃이 정상적으로 완료되었습니다.');
       return next();
     } catch (err) {

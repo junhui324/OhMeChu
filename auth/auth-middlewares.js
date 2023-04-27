@@ -5,8 +5,8 @@ require('dotenv').config();
 const authMiddlewares = {
   //refreshToken 유효성 검사 API
   isVerifiedRefreshToken: async (req, res, next) => {
-    const index = req.cookies.refreshTokenIndex;
-    const restoredRefreshToken = await authServices.getRefreshToken(index);
+    const email = req.el;
+    const restoredRefreshToken = await authServices.getRefreshToken(email);
     const secret = process.env.SECRET_KEY;
     const currentTime = new Date().getTime();
     if (!restoredRefreshToken) {
@@ -25,16 +25,10 @@ const authMiddlewares = {
         const newRefreshToken = authServices.issueRefreshJWT({
           email: decoded.el,
         });
-        const restoreRefreshToken = await authServices.restoreRefreshToken({
+        await authServices.restoreRefreshToken({
           refreshToken: newRefreshToken,
           memberEmail: decoded.el,
           expiresIn,
-        });
-        const refreshTokenIndex = restoreRefreshToken._id;
-        res.cookie('refreshTokenIndex', refreshTokenIndex, {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'none',
         });
       }
       return next();
@@ -43,7 +37,7 @@ const authMiddlewares = {
     }
   },
 
-  //로그인 유저 전용 페이지에 접근할 경우 access 토큰 인증(passport x)
+  //로그인 유저 전용 페이지에 접근할 경우 access 토큰 인증
   isVerifiedAccessToken: (req, res, next) => {
     const accessToken = req.headers.authorization.split('Bearer ')[1];
     const secret = process.env.SECRET_KEY;
