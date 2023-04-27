@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const authMiddlewares = {
   //refreshToken 유효성 검사 API
-  isVarifiedRefreshToken: async (req, res, next) => {
+  isVerifiedRefreshToken: async (req, res, next) => {
     const { index } = req.cookies.refreshTokenIndex;
     const restoredRefreshToken = authServices.getRefreshToken(index);
     const secret = process.env.SECRET_KEY;
@@ -44,9 +44,8 @@ const authMiddlewares = {
   },
 
   //로그인 유저 전용 페이지에 접근할 경우 access 토큰 인증(passport x)
-  isVarifiedAccessToken: (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    const accessToken = authHeader.split(' ')[1];
+  isVerifiedAccessToken: (req, res, next) => {
+    const accessToken = req.headers.authorization.split('Bearer ')[1];
     const secret = process.env.SECRET_KEY;
     if (!accessToken) {
       return res.status(401).json({ message: '로그인이 필요합니다.' });
@@ -57,7 +56,7 @@ const authMiddlewares = {
       return next();
     } catch (err) {
       if (err.name === 'TokenExpiredError') {
-        return authMiddlewares.isVarifiedRefreshToken(req, res, next);
+        return authMiddlewares.isVerifiedRefreshToken(req, res, next);
       }
       return res.status(401).json({ message: '로그인이 필요합니다.' });
     }
