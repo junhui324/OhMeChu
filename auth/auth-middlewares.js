@@ -58,6 +58,9 @@ const authMiddlewares = {
     try {
       const decodedAccessToken = jwt.verify(accessToken, secret);
       req.el = decodedAccessToken.el; //미들웨어 적용 시, 유저 이메일(정보) 추출 가능
+      if (decodedAccessToken.exp <= Date.now() - 1 * 60) {
+        return authMiddlewares.isVerifiedRefreshToken(req, res, next);
+      }
       return next();
     } catch (err) {
       if (err.name === 'TokenExpiredError') {
@@ -78,7 +81,7 @@ const authMiddlewares = {
           .status(statusCode.unauthorized)
           .json({ message: errorMessage.authorizationError[0] });
       }
-      const accessToken = issueAccessJWT({ email: memberEmail });
+      const accessToken = authServices.issueAccessJWT({ email: memberEmail });
       res.cookie('accessToken', accessToken, {
         httpOnly: true,
         secure: true,

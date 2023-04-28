@@ -7,7 +7,7 @@ const authServices = {
   issueAccessJWT: (user) => {
     const payload = { el: user.email }; //el: email, au: customer
     const secret = process.env.SECRET_KEY;
-    const expiresIn = '1h';
+    const expiresIn = '2m';
     const accessToken = jwt.sign(payload, secret, { expiresIn });
     return accessToken;
   },
