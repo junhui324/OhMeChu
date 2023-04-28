@@ -3,8 +3,6 @@
 import { Router } from 'express';
 import { usersController } from '../controller/users-controller.js';
 import { authMiddlewares } from '../../auth/auth-middlewares.js';
-// import { usersMiddlewares } from '../middlewares/users-middlewares.js';
-
 const usersRouter = Router();
 
 //회원 가입
@@ -17,7 +15,6 @@ usersRouter.post('/login', usersController.usersLogin);
 usersRouter.post(
   '/logout',
   authMiddlewares.isVerifiedAccessToken,
-  authMiddlewares.isVerifiedRefreshToken,
   usersController.usersLogout
 );
 
