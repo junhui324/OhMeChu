@@ -8,37 +8,36 @@ const statusCode = {
 };
 
 const authMiddlewares = {
-  //refreshToken 유효성 검사 API
+  //refreshToken 유효성 검사 API -> 재발급
   isVerifiedRefreshToken: async (req, res, next) => {
     const email = req.el;
     const restoredRefreshToken = await authServices.getRefreshToken(email);
     const secret = process.env.SECRET_KEY;
-    const currentTime = new Date().getTime();
+    const currentTime = Date.now();
     if (!restoredRefreshToken) {
       return res
         .status(statusCode.unauthorized)
         .json({ message: errorMessage.authorizationError[1] });
     }
-    const { refreshToken, memberEmail, expiresIn } = restoredRefreshToken; //db에 저장된 토큰 정보
     try {
+      const { refreshToken, expiresIn } = restoredRefreshToken; //db에 저장된 토큰 정보
       const decoded = jwt.verify(refreshToken, secret); //payload
       req.email = decoded.el;
-      if (expiresIn > currentTime) {
-        req.email = memberEmail;
-        return next();
-      }
-      if (expiresIn <= currentTime) {
-        const expiresIn = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000);
+      //만료돼서 새롭게 생성 -> 생성 후 access 발급
+      if (Date.parse(expiresIn) <= currentTime) {
+        const newExpiresIn = Date.now() + 15 * 24 * 60 * 60 * 1000;
+        await authServices.deleteRefreshToken(decoded.el);
         const newRefreshToken = authServices.issueRefreshJWT({
           email: decoded.el,
         });
+        //refresh 토큰 만료안됨 -> 그대로 access 발급
         await authServices.restoreRefreshToken({
           refreshToken: newRefreshToken,
           memberEmail: decoded.el,
-          expiresIn,
+          expiresIn: newExpiresIn,
         });
       }
-      return next();
+      return authMiddlewares.issueNewAccessToken(req, res, next);
     } catch (err) {
       return res
         .status(statusCode.unauthorized)
@@ -47,7 +46,7 @@ const authMiddlewares = {
   },
 
   //로그인 유저 전용 페이지에 접근할 경우 access 토큰 인증
-  isVerifiedAccessToken: (req, res, next) => {
+  isVerifiedAccessToken: async (req, res, next) => {
     const accessToken = req.headers.authorization.split('Bearer ')[1];
     const secret = process.env.SECRET_KEY;
     if (!accessToken) {
@@ -58,11 +57,11 @@ const authMiddlewares = {
     try {
       const decodedAccessToken = jwt.verify(accessToken, secret);
       req.el = decodedAccessToken.el; //미들웨어 적용 시, 유저 이메일(정보) 추출 가능
+      if (Date.now() + 1000 * 60 <= decodedAccessToken.exp) {
+        await authMiddlewares.isVerifiedRefreshToken(req, res, next);
+      }
       return next();
     } catch (err) {
-      if (err.name === 'TokenExpiredError') {
-        return authMiddlewares.isVerifiedRefreshToken(req, res, next);
-      }
       return res
         .status(statusCode.unauthorized)
         .json({ message: errorMessage.authorizationError[1] });
@@ -78,7 +77,7 @@ const authMiddlewares = {
           .status(statusCode.unauthorized)
           .json({ message: errorMessage.authorizationError[0] });
       }
-      const accessToken = issueAccessJWT({ email: memberEmail });
+      const accessToken = authServices.issueAccessJWT({ email: memberEmail });
       res.cookie('accessToken', accessToken, {
         httpOnly: true,
         secure: true,
@@ -91,6 +90,13 @@ const authMiddlewares = {
         .status(statusCode.unauthorized)
         .json({ message: errorMessage.authorizationError[1] });
     }
+  },
+  checkIfAlreadyLoggedIn: async (req, res, next) => {
+    const accessToken = req.headers.authorization.split('Bearer ')[1];
+    if (accessToken) {
+      return res.status(409).json({ message: '이미 로그인된 유저입니다.' });
+    }
+    return next();
   },
 };
 

@@ -17,7 +17,6 @@ usersRouter.post('/login', usersController.usersLogin);
 usersRouter.post(
   '/logout',
   authMiddlewares.isVerifiedAccessToken,
-  authMiddlewares.isVerifiedRefreshToken,
   usersController.usersLogout
 );
 

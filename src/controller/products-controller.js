@@ -21,18 +21,18 @@ const productsController = {
         img,
         category,
         description,
-        sub_description,
+        subDescription,
         recommended,
       } = req.body;
 
       const productObj = {
         name: name,
-        price: price,
+        price: parseInt(price),
         img: img,
         category: category,
         description: description,
-        sub_description: sub_description,
-        recommended: recommended,
+        subDescription: subDescription,
+        recommended: parseInt(recommended),
       };
       const newProduct = await productsService.addProduct(productObj);
       res.json(newProduct);
