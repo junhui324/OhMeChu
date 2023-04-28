@@ -98,8 +98,17 @@ const ordersController = {
   deleteOrder: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const order = await ordersService.deleteOrder(id);
-      res.json(order);
+      let accessToken = req.headers.authorization;
+      let email = '';
+      if (accessToken) {
+        accessToken = accessToken.split('Bearer ')[1];
+        email = authServices.decodedAccessToken(accessToken);
+        const order = await ordersService.deleteOrder(id, email);
+        res.json(order);
+      } else {
+        const order = await ordersService.deleteOrder(id, email);
+        res.json(order);
+      }
     } catch (err) {
       next(err);
     }

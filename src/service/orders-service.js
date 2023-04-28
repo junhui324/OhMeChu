@@ -70,11 +70,23 @@ const ordersService = {
   },
 
   //주문 id 활용해서 주문 취소(삭제) 하기 -> 주문 취소 (orderState가 "배송준비중" 일 때)
-  deleteOrder: async (id) => {
+  deleteOrder: async (id, email) => {
     const order = await Orders.findById(id).exec();
     if (order.orderState === orderStates.deliveryReady) {
-      const deletedResult = await Orders.deleteOne({ _id: order._id });
-      return deletedResult;
+      if (email) {
+        const deletedResult = await Orders.deleteOne({
+          _id: order._id,
+          email: email,
+        });
+        await Users.updateOne(
+          { email: email },
+          { $pull: { orderNumber: order._id } }
+        );
+        return deletedResult;
+      } else {
+        const deletedResult = await Orders.deleteOne({ _id: order._id });
+        return deletedResult;
+      }
     } else {
       console.log(`현재 ${order.orderState} 이므로 취소할 수 없습니다.`);
       return;
