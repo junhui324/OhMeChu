@@ -47,13 +47,14 @@ const authMiddlewares = {
 
   //로그인 유저 전용 페이지에 접근할 경우 access 토큰 인증
   isVerifiedAccessToken: async (req, res, next) => {
-    const accessToken = req.headers.authorization.split('Bearer ')[1];
+    let accessToken = req.headers.authorization;
     const secret = process.env.SECRET_KEY;
     if (!accessToken) {
       return res
         .status(statusCode.unauthorized)
         .json({ message: errorMessage.authorizationError[1] });
     }
+    accessToken = accessToken.split('Bearer ')[1];
     try {
       const decodedAccessToken = jwt.verify(accessToken, secret);
       req.el = decodedAccessToken.el; //미들웨어 적용 시, 유저 이메일(정보) 추출 가능
@@ -92,8 +93,9 @@ const authMiddlewares = {
     }
   },
   checkIfAlreadyLoggedIn: async (req, res, next) => {
-    const accessToken = req.headers.authorization.split('Bearer ')[1];
+    let accessToken = req.headers.authorization;
     if (accessToken) {
+      accessToken = accessToken.split('Bearer ')[1];
       return res.status(409).json({ message: '이미 로그인된 유저입니다.' });
     }
     return next();
