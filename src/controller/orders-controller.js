@@ -1,7 +1,7 @@
 // req 객체를 받아 service에 요청을 전달
 // service에서 res를 받아 Front에 최종 응답
 import { ordersService } from '../service/orders-service.js';
-import { authServices } from '../../auth/auth-service.js';
+import { authServices } from '../auth/auth-service.js';
 
 const ordersController = {
   //주문 정보 저장
@@ -21,7 +21,7 @@ const ordersController = {
       let accessToken = req.headers.authorization;
       let email = '';
       if (accessToken) {
-        accessToken = accessToken.split('Bearer ')[1];
+        accessToken = accessToken.split(' ')[1];
         email = authServices.decodedAccessToken(accessToken);
       }
       const orderObj = {
@@ -101,7 +101,7 @@ const ordersController = {
       let accessToken = req.headers.authorization;
       let email = '';
       if (accessToken) {
-        accessToken = accessToken.split('Bearer ')[1];
+        accessToken = accessToken.split(' ')[1];
         email = authServices.decodedAccessToken(accessToken);
         const order = await ordersService.deleteOrder(id, email);
         res.json(order);

@@ -1,6 +1,6 @@
 import { authServices } from './auth-service.js';
 import jwt from 'jsonwebtoken';
-import { errorMessage } from '../src/misc/error-message.js';
+import { errorMessage } from '../misc/error-message.js';
 require('dotenv').config();
 
 const statusCode = {
@@ -54,7 +54,7 @@ const authMiddlewares = {
         .status(statusCode.unauthorized)
         .json({ message: errorMessage.authorizationError[1] });
     }
-    accessToken = accessToken.split('Bearer ')[1];
+    accessToken = accessToken.split(' ')[1];
     try {
       const decodedAccessToken = jwt.verify(accessToken, secret);
       req.el = decodedAccessToken.el; //미들웨어 적용 시, 유저 이메일(정보) 추출 가능
@@ -95,7 +95,7 @@ const authMiddlewares = {
   checkIfAlreadyLoggedIn: async (req, res, next) => {
     let accessToken = req.headers.authorization;
     if (accessToken) {
-      accessToken = accessToken.split('Bearer ')[1];
+      accessToken = accessToken.split(' ')[1];
       return res.status(409).json({ message: '이미 로그인된 유저입니다.' });
     }
     return next();
