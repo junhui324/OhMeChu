@@ -105,7 +105,9 @@ const productsController = {
 
   getRecommendedList: async (req, res, next) => {
     try {
-      const productsAll = await productsService.getRecommendedList();
+      const productsAll = await productsService.getSortedProductsList(
+        recomended
+      );
       res.json(productsAll);
     } catch (err) {
       next(err);
@@ -114,7 +116,9 @@ const productsController = {
 
   getNewProductsList: async (req, res, next) => {
     try {
-      const productsAll = await productsService.getNewProductsList();
+      const productsAll = await productsService.getSortedProductsList(
+        createdAt
+      );
       res.json(productsAll);
     } catch (err) {
       next(err);
