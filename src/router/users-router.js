@@ -2,7 +2,7 @@
 
 import { Router } from 'express';
 import { usersController } from '../controller/users-controller.js';
-import { authMiddlewares } from '../../auth/auth-middlewares.js';
+import { authMiddlewares } from '../auth/auth-middlewares.js';
 const usersRouter = Router();
 
 //회원 가입

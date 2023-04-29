@@ -23,7 +23,7 @@ const ordersService = {
     if (orderObj.email) {
       await Users.updateOne(
         { email: orderObj.email },
-        { $push: { orderNumber: order._id } }
+        { $push: { orderNumber: order._id } } //mongodb 문법 -> db 관련된 명세가 service에 가면 안됨
       );
     }
     return order;
@@ -64,7 +64,7 @@ const ordersService = {
       );
       return updatedResult;
     } else {
-      console.log(`현재 ${order.orderState} 이므로 수정할 수 없습니다.`);
+      console.log(`현재 ${order.orderState} 이므로 수정할 수 없습니다.`); //Error로 return하거나 내려주기
       return;
     }
   },
@@ -76,7 +76,7 @@ const ordersService = {
       const deletedResult = await Orders.deleteOne({ _id: order._id });
       return deletedResult;
     } else {
-      console.log(`현재 ${order.orderState} 이므로 취소할 수 없습니다.`);
+      console.log(`현재 ${order.orderState} 이므로 취소할 수 없습니다.`); //Error로 return하거나 내려주기
       return;
     }
   },

@@ -31,10 +31,11 @@ const usersService = {
 
   //회원 정보 변경
   changeProfile: async (email, password, gender, phoneNumber, address) => {
-    const user = await Users.findOne({ email: email }); //id로 회원의 정보 찾기
+    const user = await Users.findOne({ email: email });
     const salt = await bcrypt.genSalt(12);
     password = await bcrypt.hash(password, salt);
     const changeUserData = await Users.updateOne(
+      //모델에 들어가야 함
       { email: user.email },
       {
         password: password,
