@@ -53,18 +53,4 @@ const ordersSchema = new Schema(
   { versionKey: false }
 );
 
-//우편번호 도로명주소 옛날주소 상세주소 참고사항(아파트이름) -> 5개 배열
-//_id 를 id로
 export { ordersSchema };
-/*
-{
-    "user_name": "장준희",
-    "phone_number": "01012345678",
-    "address": "전주시 덕진구",
-    "requirement": "문 앞에 놓아주세요",
-    "purchase_amount": "30000",
-    "delivery_fee": "5000",
-    "total_amount": "35000",
-    "order_state": "배송 준비 중"
-}
-*/

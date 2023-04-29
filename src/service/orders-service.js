@@ -5,7 +5,6 @@ import { Users } from '../db/model/index.js';
 
 // 주문 상태 문자열 열거형
 const orderStates = {
-  //productReady: '상품 준비 중',
   deliveryReady: '배송준비중',
   courierDelivery: '배송중',
   deliveryCompleted: '배송완료',
@@ -23,7 +22,7 @@ const ordersService = {
     if (orderObj.email) {
       await Users.updateOne(
         { email: orderObj.email },
-        { $push: { orderNumber: order._id } } //mongodb 문법 -> db 관련된 명세가 service에 가면 안됨
+        { $push: { orderNumber: order._id } }
       );
     }
     return order;
@@ -70,11 +69,23 @@ const ordersService = {
   },
 
   //주문 id 활용해서 주문 취소(삭제) 하기 -> 주문 취소 (orderState가 "배송준비중" 일 때)
-  deleteOrder: async (id) => {
+  deleteOrder: async (id, email) => {
     const order = await Orders.findById(id).exec();
     if (order.orderState === orderStates.deliveryReady) {
-      const deletedResult = await Orders.deleteOne({ _id: order._id });
-      return deletedResult;
+      if (email) {
+        const deletedResult = await Orders.deleteOne({
+          _id: order._id,
+          email: email,
+        });
+        await Users.updateOne(
+          { email: email },
+          { $pull: { orderNumber: order._id } }
+        );
+        return deletedResult;
+      } else {
+        const deletedResult = await Orders.deleteOne({ _id: order._id });
+        return deletedResult;
+      }
     } else {
       console.log(`현재 ${order.orderState} 이므로 취소할 수 없습니다.`); //Error로 return하거나 내려주기
       return;
