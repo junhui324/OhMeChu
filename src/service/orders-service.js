@@ -5,7 +5,6 @@ import { Users } from '../db/model/index.js';
 
 // 주문 상태 문자열 열거형
 const orderStates = {
-  //productReady: '상품 준비 중',
   deliveryReady: '배송준비중',
   courierDelivery: '배송중',
   deliveryCompleted: '배송완료',
@@ -64,7 +63,7 @@ const ordersService = {
       );
       return updatedResult;
     } else {
-      console.log(`현재 ${order.orderState} 이므로 수정할 수 없습니다.`);
+      console.log(`현재 ${order.orderState} 이므로 수정할 수 없습니다.`); //Error로 return하거나 내려주기
       return;
     }
   },
@@ -88,7 +87,7 @@ const ordersService = {
         return deletedResult;
       }
     } else {
-      console.log(`현재 ${order.orderState} 이므로 취소할 수 없습니다.`);
+      console.log(`현재 ${order.orderState} 이므로 취소할 수 없습니다.`); //Error로 return하거나 내려주기
       return;
     }
   },

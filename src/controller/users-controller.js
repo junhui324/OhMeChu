@@ -1,7 +1,7 @@
 // req 객체를 받아 service에 요청을 전달
 // service에서 res를 받아 Front에 최종 응답
 import { usersService } from '../service/users-service.js';
-import { authServices } from '../../auth/auth-service.js';
+import { authServices } from '../auth/auth-service.js';
 import { errorMessage } from '../misc/error-message.js';
 
 const statusCode = {
@@ -48,7 +48,6 @@ const usersController = {
     }
   },
 
-  //로그인
   usersLogin: async (req, res, next) => {
     try {
       const { email, password } = req.body;
@@ -68,7 +67,6 @@ const usersController = {
       const expiresIn = Date.now() + 15 * 24 * 60 * 60 * 1000;
       const memberEmail = memberInfo.email;
       await authServices.restoreRefreshToken(
-        //db에 refresh token 저장
         refreshToken,
         memberEmail,
         expiresIn
