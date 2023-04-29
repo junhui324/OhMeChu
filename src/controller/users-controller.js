@@ -48,7 +48,6 @@ const usersController = {
     }
   },
 
-  //로그인
   usersLogin: async (req, res, next) => {
     try {
       const { email, password } = req.body;
@@ -68,7 +67,6 @@ const usersController = {
       const expiresIn = Date.now() + 15 * 24 * 60 * 60 * 1000;
       const memberEmail = memberInfo.email;
       await authServices.restoreRefreshToken(
-        //db에 refresh token 저장
         refreshToken,
         memberEmail,
         expiresIn

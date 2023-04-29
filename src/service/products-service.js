@@ -1,51 +1,27 @@
 // 비즈니스 로직을 수행하는 코드 -> controller로 전달
 
-import { Products } from '../db/model/index.js';
-
-const descSort = -1;
-const ascSort = 1;
-
-const category = {
-  korean: 'korean',
-  chinese: 'chinese',
-  western: 'western',
-  japanese: 'japanese',
-};
-
-const sortMap = new Map([
-  ['best', { recommended: descSort }],
-  ['latest', { createdAt: descSort }],
-  ['highPrice', { price: descSort }],
-  ['lowPrice', { price: ascSort }],
-  ['descName', { name: descSort }],
-  ['ascName', { name: ascSort }],
-]);
-
-const categoryMap = new Map([
-  ['korean', async () => Products.find({ category: category.korean })],
-  ['chinese', async () => Products.find({ category: category.chinese })],
-  ['western', async () => Products.find({ category: category.western })],
-  ['japanese', async () => Products.find({ category: category.japanese })],
-]);
+import { productsDAO } from '../db/productsDAO.js';
 
 const productsService = {
   //관리자 - 상품 여러개 추가
   addProductsList: async (arr) => {
-    const addProductsList = await Products.create(arr);
+    const addProductsList = await productsDAO.createProducts(arr);
     return addProductsList;
   },
 
-  //관리자 - 상품 하나 추가 (이미지 추가해보기.. ㅠ)
+  //관리자 - 상품 하나 추가
   addProduct: async (productObj) => {
-    const addProduct = await Products.create(productObj);
+    const addProduct = await productsDAO.createProducts(productObj);
     return addProduct;
   },
 
   //관리자 - 상품 정보 여러개 업데이트
   updateProductsList: async (filterField, filterContents, field, contents) => {
-    const product = await Products.updateMany(
-      { [filterField]: filterContents },
-      { [field]: contents }
+    const product = await productsDAO.updateProductsMany(
+      filterField,
+      filterContents,
+      field,
+      contents
     ); //rangeField: 조건(카테고리 등)
     return product;
   },
@@ -53,42 +29,34 @@ const productsService = {
   //관리자 - 상품 정보 업데이트 (ex) 카테고리 수정)
   updateProduct: async (id, updateField, contents) => {
     //field는 객체
-    const product = await Products.findByIdAndUpdate(id, {
-      [updateField]: contents,
-    });
+    const product = await productsDAO.findProductByIdAndUpdate(
+      id,
+      updateField,
+      contents
+    );
     return product;
   },
 
   //관리자 - 상품 삭제
   deleteProduct: async (id) => {
-    const product = await Products.findByIdAndDelete(id);
+    const product = await productsDAO.findProductByIdAndDelete(id);
     return product;
   },
 
   //===================================================================
   //조건에 따라 상품 get
-  getProductsList: async (sortingKey = 'recommended') => {
-    let sortField = sortMap.get(sortingKey) || {};
-    const categoryFunction = categoryMap.get(sortingKey);
-    if (categoryFunction) {
-      return await categoryFunction();
-    }
-    const productsAll = await Products.find({}).sort(sortField);
+  getProductsList: async (sortingKey) => {
+    const productsAll = await productsDAO.findProductsAndSortByKey(sortingKey);
     return productsAll;
   },
 
   getProduct: async (id) => {
-    const product = await Products.findById(id);
+    const product = await productsDAO.findProductById(id);
     return product;
   },
 
-  getRecommendedList: async () => {
-    const productsAll = await Products.find({}).sort({ recommended: -1 });
-    return productsAll;
-  },
-
-  getNewProductsList: async () => {
-    const productsAll = await Products.find({}).sort({ createdAt: -1 });
+  getSortedProductsList: async (sortfield) => {
+    const productsAll = await productsDAO.findProductsAndSort(sortfield);
     return productsAll;
   },
 };
